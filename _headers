@@ -1,0 +1,18 @@
+# Cabeceras para Netlify (y compatibles).
+#
+# La encuesta pesa muy poco, así que preferimos que el navegador pregunte
+# siempre si hay una versión nueva antes de usar la que tiene guardada.
+# Sin esto, un niño puede quedarse con una página vieja en caché y el
+# formulario dejar de funcionar tras un cambio.
+
+/*
+  Cache-Control: no-cache
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# Las páginas del docente no deben salir en buscadores.
+/login.html
+  X-Robots-Tag: noindex
+
+/dashboard.html
+  X-Robots-Tag: noindex

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acceso del administrador — Encuesta</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/estilos.css?v=5" rel="stylesheet">
+</head>
+<body class="pantalla-admin d-flex align-items-center" style="min-height:100vh">
+
+  <main class="container py-5" style="max-width:460px">
+    <div class="tarjeta tarjeta-login p-4 p-md-5">
+
+      <header class="text-center mb-4">
+        <div class="emoji-login" style="font-size:2.75rem; line-height:1">🔐</div>
+        <h1 class="h3 titulo mb-1">Acceso del administrador</h1>
+        <p class="mb-0" style="color:var(--gris)">Resultados de la encuesta</p>
+      </header>
+
+      <div id="avisos" class="mb-3 oculto"></div>
+
+      <form id="form-login" novalidate>
+        <div class="mb-3">
+          <label class="form-label fw-bold" for="email">Correo</label>
+          <input class="form-control form-control-lg rounded-4" id="email" type="email"
+                 autocomplete="username" required placeholder="docente@colegio.edu.pe">
+          <div class="invalid-feedback">Escribe un correo válido.</div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-bold" for="clave">Contraseña</label>
+          <div class="input-group">
+            <input class="form-control form-control-lg rounded-start-4" id="clave"
+                   type="password" autocomplete="current-password" required>
+            <button class="btn btn-secundario rounded-end-4" type="button" id="btn-ver"
+                    aria-label="Mostrar u ocultar la contraseña">👁️</button>
+          </div>
+          <div class="invalid-feedback d-block oculto" id="error-clave">
+            Escribe tu contraseña.
+          </div>
+        </div>
+
+        <button class="btn btn-principal w-100" id="btn-entrar" type="submit">
+          <span class="spinner-border spinner-border-sm me-2 oculto" id="spinner"
+                role="status" aria-hidden="true"></span>
+          <span id="texto-entrar">Entrar</span>
+        </button>
+      </form>
+
+      <p class="text-center mt-4 mb-0">
+        <a href="index.html?v=5" class="text-decoration-none" style="color:var(--gris)">← Volver a la encuesta</a>
+      </p>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script type="module">
+    import { iniciarSesion, sesionActual, mensajeDeErrorAuth, configurado }
+      from './assets/js/auth.js?v=5';
+
+    const $ = (id) => document.getElementById(id);
+    const avisos  = $('avisos');
+    const form    = $('form-login');
+    const email   = $('email');
+    const clave   = $('clave');
+    const boton   = $('btn-entrar');
+    const spinner = $('spinner');
+    const texto   = $('texto-entrar');
+
+    // ¿A dónde volver después de entrar?
+    const parametros = new URLSearchParams(window.location.search);
+    // Se limpia el nombre de archivo y se le añade la versión, que esquiva la caché.
+    const pagina = (parametros.get('volver') || 'dashboard.html').replace(/[^a-zA-Z0-9._-]/g, '');
+    const destino = (pagina || 'dashboard.html') + '?v=5';
+
+    function avisar(mensaje, tipo = 'danger') {
+      avisos.innerHTML =
+        `<div class="alert alert-${tipo} rounded-4 mb-0" role="alert">${mensaje}</div>`;
+      avisos.classList.remove('oculto');
+    }
+
+    if (!configurado()) {
+      avisar('Falta configurar Supabase en <code>assets/js/config.js</code>.', 'warning');
+      boton.disabled = true;
+    } else {
+      // Si ya había sesión, pasamos directo al dashboard.
+      sesionActual().then((s) => { if (s) window.location.replace(destino); });
+    }
+
+    $('btn-ver').addEventListener('click', () => {
+      clave.type = clave.type === 'password' ? 'text' : 'password';
+    });
+
+    form.addEventListener('submit', async (evento) => {
+      evento.preventDefault();
+      avisos.classList.add('oculto');
+
+      const correoOk = email.checkValidity() && email.value.trim() !== '';
+      const claveOk  = clave.value.length > 0;
+      email.classList.toggle('is-invalid', !correoOk);
+      $('error-clave').classList.toggle('oculto', claveOk);
+      if (!correoOk || !claveOk) return;
+
+      boton.disabled = true;
+      spinner.classList.remove('oculto');
+      texto.textContent = 'Entrando…';
+
+      try {
+        await iniciarSesion(email.value, clave.value);
+        window.location.href = destino;
+      } catch (error) {
+        avisar(mensajeDeErrorAuth(error));
+        boton.disabled = false;
+        spinner.classList.add('oculto');
+        texto.textContent = 'Entrar';
+        clave.value = '';
+        clave.focus();
+      }
+    });
+  </script>
+</body>
+</html>

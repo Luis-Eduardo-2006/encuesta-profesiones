@@ -1,0 +1,726 @@
+/* ==========================================================================
+   Encuesta "¿Quién hace este trabajo?"
+   Estilos propios sobre Bootstrap 5. Tipografía grande y colores alegres,
+   pensados para niños de primaria en celular, tablet y computadora.
+   ========================================================================== */
+
+:root {
+  --morado:  #6C5CE7;
+  --morado-oscuro: #4B3FC4;
+  --naranja: #FF7A59;
+  --amarillo:#FFC93C;
+  --turquesa:#00B8A9;
+  --rosa:    #FF6B9D;
+  --crema:   #FFF8F0;
+  --tinta:   #2D2A45;
+  --gris:    #6B6880;
+
+  --radio:   22px;
+  --sombra:  0 6px 0 rgba(45, 42, 69, .12);
+  --sombra-suave: 0 10px 30px rgba(45, 42, 69, .10);
+}
+
+/* --------------------------------------------------------------- Base --- */
+
+/* Nunca hay desplazamiento horizontal, mida lo que mida la pantalla. */
+* { min-width: 0; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--crema);
+  color: var(--tinta);
+  font-family: "Nunito", "Segoe UI", system-ui, -apple-system, sans-serif;
+  /* Crece con la pantalla, pero nunca baja de los 18px que pide el proyecto. */
+  font-size: clamp(18px, 1.1vw + 14px, 19px);
+  line-height: 1.6;
+  min-height: 100svh;
+  overflow-x: hidden;
+}
+
+img, svg, video, canvas { max-width: 100%; }
+
+h1, h2, h3, h4, .titulo {
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.fondo-alegre {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255, 201, 60, .30), transparent 42%),
+    radial-gradient(circle at 88% 12%, rgba(108, 92, 231, .22), transparent 45%),
+    radial-gradient(circle at 78% 88%, rgba(0, 184, 169, .22), transparent 45%),
+    var(--crema);
+  background-attachment: fixed;
+}
+
+/* Salta al contenido: accesibilidad de teclado. */
+.saltar-contenido {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--morado);
+  color: #fff;
+  padding: .75rem 1.25rem;
+  border-radius: 0 0 var(--radio) 0;
+  z-index: 1080;
+}
+.saltar-contenido:focus { left: 0; }
+
+/* ------------------------------------------------------------ Botones --- */
+
+.btn {
+  font-weight: 800;
+  border-radius: 999px;
+  border-width: 0;
+  padding: .85rem 2rem;
+  font-size: 1.05rem;
+}
+
+.btn-grande {
+  font-size: 1.35rem;
+  padding: 1rem 2.75rem;
+}
+
+.btn-principal {
+  background: var(--morado);
+  color: #fff;
+  box-shadow: 0 5px 0 var(--morado-oscuro);
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+.btn-principal:hover,
+.btn-principal:focus {
+  background: var(--morado-oscuro);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 var(--morado-oscuro);
+}
+.btn-principal:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--morado-oscuro); }
+.btn-principal:disabled { background: #C9C5E8; box-shadow: none; color: #fff; opacity: 1; }
+
+.btn-secundario {
+  background: #fff;
+  color: var(--tinta);
+  border: 3px solid #E6E1F5;
+}
+.btn-secundario:hover { background: #F3F0FF; color: var(--tinta); }
+
+/* ------------------------------------------------------------ Tarjetas -- */
+
+.tarjeta {
+  background: #fff;
+  border: 0;
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-suave);
+}
+
+.tarjeta-portada {
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+/* -------------------------------------- Portada: selector de género --- */
+
+/* Bootstrap agranda los <legend>; aquí debe verse igual que las demás
+   etiquetas del formulario. */
+#grupo-genero legend {
+  font-size: inherit;
+  line-height: inherit;
+  margin-bottom: .5rem;
+}
+
+.selector-genero {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+}
+
+.opcion-genero {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  flex: 1 1 auto;
+  min-width: 140px;
+  min-height: 56px;
+  background: #fff;
+  border: 3px solid #E6E1F5;
+  border-radius: var(--radio);
+  padding: .7rem 1.1rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--tinta);
+  cursor: pointer;
+  transition: transform .15s ease, border-color .15s ease,
+              background .15s ease, box-shadow .15s ease;
+}
+
+.opcion-genero:hover { border-color: var(--morado); transform: translateY(-2px); }
+.opcion-genero:focus-visible { outline: 4px solid var(--amarillo); outline-offset: 3px; }
+
+.opcion-genero .emoji {
+  font-size: 1.7rem;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+
+.opcion-genero.elegida {
+  background: linear-gradient(135deg, #F0ECFF, #FFF3E8);
+  border-color: var(--morado);
+  box-shadow: 0 5px 0 rgba(108, 92, 231, .22);
+}
+
+/* Cuando falta elegir, el grupo entero se marca en rojo. */
+#grupo-genero.falta .opcion-genero { border-color: #DC3545; }
+
+.mensaje-error {
+  color: #DC3545;
+  font-size: .9rem;
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .opcion-genero { transition: none; }
+}
+
+/* ----------------------------------------------- Encuesta: la imagen --- */
+
+/* La foto es cuadrada siempre. El lado se elige por el menor de tres límites:
+   el ancho disponible, un máximo cómodo, y una fracción del alto de pantalla,
+   para que en un celular acostado no empuje las opciones fuera de la vista. */
+.marco-imagen {
+  width: min(100%, 420px, 48vh);
+  aspect-ratio: 1 / 1;
+  margin-inline: auto;
+  border-radius: var(--radio);
+  overflow: hidden;
+  background: #EDE9FB;
+  box-shadow: var(--sombra-suave);
+  position: relative;
+}
+
+.marco-imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ------------------------------------------- Encuesta: la disposición -- */
+
+/* En pantallas angostas todo va apilado; en anchas, la foto a un lado y la
+   pregunta al otro, así ambas caben sin desplazar. */
+.tablero {
+  display: grid;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (min-width: 992px) {
+  .tablero { grid-template-columns: minmax(260px, 400px) 1fr; gap: 2.5rem; }
+  .marco-imagen { width: 100%; }
+}
+
+/* Celular o tablet acostados: poca altura y bastante ancho. */
+@media (max-height: 620px) and (min-width: 660px) {
+  .tablero { grid-template-columns: minmax(150px, 40vh) 1fr; gap: 1.5rem; }
+  .marco-imagen { width: 100%; }
+}
+
+/* Celular chico de pie: la foto cede altura antes que las opciones. */
+@media (max-height: 700px) and (max-width: 659px) {
+  .marco-imagen { width: min(100%, 420px, 30vh); }
+}
+
+.etiqueta-trabajo {
+  position: absolute;
+  top: .75rem;
+  left: .75rem;
+  background: rgba(45, 42, 69, .78);
+  color: #fff;
+  font-weight: 800;
+  font-size: .95rem;
+  padding: .35rem 1rem;
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
+}
+
+/* -------------------------------------------- Encuesta: las opciones --- */
+
+.pregunta-texto {
+  font-size: clamp(1.35rem, 4.2vw, 1.9rem);
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.lista-opciones {
+  display: grid;
+  gap: .9rem;
+}
+
+.opcion {
+  display: flex;
+  align-items: center;
+  gap: clamp(.6rem, 2vw, 1rem);
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  border: 3px solid #E6E1F5;
+  border-radius: var(--radio);
+  padding: clamp(.7rem, 1.6vw, 1rem) clamp(.9rem, 2.2vw, 1.25rem);
+  font-size: clamp(1.05rem, 2.4vw, 1.25rem);
+  font-weight: 700;
+  color: var(--tinta);
+  cursor: pointer;
+  /* Objetivo táctil cómodo para una mano pequeña. */
+  min-height: 56px;
+  transition: transform .15s ease, border-color .15s ease,
+              background .15s ease, box-shadow .15s ease;
+}
+
+.opcion:hover  { border-color: var(--morado); transform: translateY(-2px); }
+.opcion:focus-visible { outline: 4px solid var(--amarillo); outline-offset: 3px; }
+
+.opcion .emoji {
+  font-size: clamp(1.6rem, 4.5vw, 2.1rem);
+  line-height: 1;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .12));
+}
+
+.opcion.elegida {
+  background: linear-gradient(135deg, #F0ECFF, #FFF3E8);
+  border-color: var(--morado);
+  box-shadow: 0 6px 0 rgba(108, 92, 231, .25);
+  animation: latido .32s ease;
+}
+
+.opcion.elegida::after {
+  content: "✓";
+  margin-left: auto;
+  font-size: 1.6rem;
+  color: var(--morado);
+  font-weight: 900;
+}
+
+@keyframes latido {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(1.035); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .opcion, .btn-principal { transition: none; }
+  .opcion.elegida { animation: none; }
+}
+
+/* Pantallas de poca altura (celular acostado, portátiles pequeños): todo más
+   compacto, para que el botón de avanzar quede a la vista sin desplazar.
+   Va después de las reglas base a propósito: si no, la cascada lo anularía. */
+@media (max-height: 700px) {
+  .pregunta-texto { font-size: clamp(1.1rem, 2.6vw, 1.35rem); margin-bottom: .85rem !important; }
+  .lista-opciones { gap: .5rem; }
+  .opcion {
+    min-height: 44px;
+    padding: .45rem .85rem;
+    font-size: clamp(.98rem, 1.9vw, 1.08rem);
+    border-width: 2px;
+  }
+  .opcion .emoji { font-size: 1.45rem; }
+  .btn { padding: .6rem 1.5rem; font-size: .98rem; }
+  .marco-imagen { margin-bottom: 0; }
+  #encuesta .tablero { gap: 1rem; }
+  .nota-encuesta { display: none; }  /* ese recordatorio ya está en la portada */
+}
+
+/* Login en pantalla baja (celular acostado): cabe sin desplazar. */
+@media (max-height: 700px) {
+  .tarjeta-login { padding: 1.25rem !important; }
+  .tarjeta-login .emoji-login { display: none; }
+  .tarjeta-login header { margin-bottom: 1rem !important; }
+  .tarjeta-login .mb-3 { margin-bottom: .6rem !important; }
+  .tarjeta-login .mb-4 { margin-bottom: .9rem !important; }
+  .tarjeta-login .form-control-lg { font-size: 1rem; padding: .45rem .75rem; }
+}
+
+/* Cuando la foto es pequeña, la etiqueta no debe taparla. */
+@media (max-height: 700px), (max-width: 420px) {
+  .etiqueta-trabajo {
+    font-size: .78rem;
+    padding: .22rem .7rem;
+    top: .5rem;
+    left: .5rem;
+  }
+}
+
+/* ------------------------------------------------------- Progreso ------ */
+
+.barra-progreso {
+  height: 16px;
+  border-radius: 999px;
+  background: #EDE9FB;
+  overflow: hidden;
+}
+
+.barra-progreso .progress-bar {
+  background: linear-gradient(90deg, var(--turquesa), var(--morado));
+  transition: width .35s ease;
+}
+
+.texto-progreso {
+  font-weight: 800;
+  color: var(--gris);
+}
+
+/* ------------------------------------ Historias: pantallas y carrusel -- */
+
+/* Las dos pantallas de mensaje, centradas verticalmente cuando hay sitio. */
+.pantalla-mensaje {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: min(70svh, 620px);
+}
+
+.pantalla-mensaje .tarjeta { width: 100%; max-width: 720px; }
+
+.pantalla-mensaje h1 {
+  font-size: clamp(1.5rem, 5vw, 2.4rem);
+  line-height: 1.25;
+}
+
+/* Cinta que avisa de la segunda vuelta dentro de la encuesta. */
+.cinta-momento {
+  background: linear-gradient(135deg, #F0ECFF, #FFF3E8);
+  border: 2px solid #D9D0FF;
+  border-radius: var(--radio);
+  padding: .75rem 1.15rem;
+  font-weight: 800;
+  color: var(--morado-oscuro);
+  font-size: clamp(.95rem, 2.2vw, 1.05rem);
+}
+
+.cabecera-historia {
+  padding: 1.15rem 1.5rem;
+  color: #fff;
+  font-weight: 800;
+}
+
+/* La foto de cada diapositiva: se ve entera, sin recortar caras ni texto. */
+.marco-historia {
+  background: #15132B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.marco-historia img {
+  width: 100%;
+  max-height: min(44svh, 430px);
+  object-fit: contain;
+  display: block;
+}
+
+/* Pantallas anchas y bajas (celular acostado, portátiles pequeños): la foto
+   a un lado y el texto al otro, para que el botón de avanzar quepa sin
+   desplazar. La cabecera ocupa las dos columnas. */
+@media (max-height: 700px) and (min-width: 660px) {
+  .tarjeta-historia {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  }
+  .tarjeta-historia .cabecera-historia { grid-column: 1 / -1; padding: .75rem 1.25rem; }
+  .marco-historia img { max-height: min(52svh, 340px); }
+  .texto-historia-caja { padding: 1rem 1.25rem !important; overflow-y: auto; }
+  .texto-historia-caja .fs-5 { font-size: 1.05rem !important; }
+  .texto-historia-caja p:last-child { font-size: .92rem; }
+}
+
+/* Pantallas muy bajas de pie: se recorta lo que sobra. */
+@media (max-height: 640px) and (max-width: 659px) {
+  .marco-historia img { max-height: 34svh; }
+  .texto-historia-caja { padding: .9rem 1rem !important; }
+  .texto-historia-caja .fs-5 { font-size: 1rem !important; }
+  .texto-historia-caja p:last-child { font-size: .88rem; }
+  .cabecera-historia { padding: .7rem 1rem; }
+}
+
+/* Puntitos de avance del carrusel. */
+.puntos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  justify-content: center;
+  flex: 1 1 auto;
+}
+
+.punto {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #D9D3F0;
+  transition: background .2s ease, transform .2s ease;
+}
+
+.punto.activo {
+  background: var(--morado);
+  transform: scale(1.5);
+}
+
+@media (max-width: 420px) {
+  .puntos { order: 3; width: 100%; margin-top: .75rem; }
+}
+
+/* --------------------------------------------------- Revelación -------- */
+
+.tarjeta-revelacion {
+  background: #fff;
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-suave);
+  overflow: hidden;
+  height: 100%;
+}
+
+.tarjeta-revelacion .cabecera {
+  padding: 1.25rem 1.5rem;
+  color: #fff;
+  font-weight: 800;
+}
+
+.color-1 { background: linear-gradient(135deg, #6C5CE7, #A29BFE); }
+.color-2 { background: linear-gradient(135deg, #FF7A59, #FFC93C); }
+.color-3 { background: linear-gradient(135deg, #00B8A9, #7BE3D5); }
+.color-4 { background: linear-gradient(135deg, #FF6B9D, #FFA5C3); }
+.color-5 { background: linear-gradient(135deg, #E8452C, #FF9A3C); }
+
+.foto-revelacion {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: #EDE9FB;
+}
+
+.marco-foto-faltante {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  background: linear-gradient(135deg, #EDE9FB, #FFF1E4);
+  color: var(--gris);
+  font-size: 3rem;
+}
+
+/* Antes y después de cada pregunta, en la pantalla final del niño. */
+.fila-comparacion {
+  padding: .85rem 1rem;
+  border-radius: 14px;
+  background: #FAF9FF;
+  border: 2px solid #EFEBFF;
+}
+
+.fila-comparacion + .fila-comparacion { margin-top: .6rem; }
+
+.fila-comparacion.cambio {
+  background: linear-gradient(135deg, #FFF6E8, #F3FFFC);
+  border-color: #FFD79B;
+}
+
+.pastilla {
+  background: #fff;
+  border: 2px solid #E6E1F5;
+  border-radius: 999px;
+  padding: .3rem .85rem;
+  font-size: .95rem;
+  white-space: nowrap;
+}
+
+.marca-cambio {
+  background: var(--amarillo);
+  color: #6B4B00;
+  border-radius: 999px;
+  padding: .25rem .75rem;
+  font-size: .85rem;
+  font-weight: 800;
+}
+
+.mensaje-final {
+  background: linear-gradient(135deg, var(--morado), var(--turquesa));
+  color: #fff;
+  border-radius: var(--radio);
+  padding: 2.5rem 1.5rem;
+  font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+  font-weight: 800;
+  text-align: center;
+}
+
+/* ------------------------------------------------------- Dashboard ----- */
+
+.tarjeta-resumen {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: var(--sombra-suave);
+  padding: 1.25rem 1.4rem;
+  height: 100%;
+}
+
+.tarjeta-resumen .valor {
+  font-size: 2.4rem;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.tarjeta-resumen .etiqueta {
+  color: var(--gris);
+  font-size: .95rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+
+.caja-grafico {
+  position: relative;
+  width: 100%;
+  height: clamp(240px, 34vh, 340px);
+}
+
+.caja-grafico-alta { height: clamp(300px, 46vh, 460px); }
+
+.tabla-respuestas {
+  font-size: .95rem;
+}
+
+.tabla-respuestas th {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 2;
+}
+
+.contenedor-tabla {
+  max-height: 520px;
+  overflow: auto;
+  border-radius: 14px;
+  border: 1px solid #E6E1F5;
+}
+
+/* Fuera de la encuesta el cuerpo puede ser más sobrio (dashboard). */
+body.pantalla-admin {
+  background: #F5F4FB;
+  font-size: clamp(15px, .35vw + 13.8px, 16px);
+}
+
+/* La barra superior del dashboard se apila sola cuando no cabe. */
+body.pantalla-admin .navbar .container-fluid {
+  gap: .5rem;
+  row-gap: .5rem;
+}
+
+@media (max-width: 575.98px) {
+  body.pantalla-admin .navbar-brand { font-size: 1rem; }
+  .tarjeta-resumen .valor { font-size: 1.9rem; }
+  .tarjeta-resumen { padding: 1rem; }
+}
+
+/* ------------------------------------------------------------ Varios --- */
+
+.oculto { display: none !important; }
+
+.aviso-config {
+  border-radius: 14px;
+  border: 2px dashed #E8452C;
+  background: #FFF1EE;
+  color: #8A2718;
+  padding: 1rem 1.25rem;
+  font-weight: 700;
+}
+
+footer.pie {
+  color: var(--gris);
+  font-size: .9rem;
+}
+
+/* Celdas del dashboard donde el niño cambió de opinión entre las dos vueltas. */
+.celda-cambio {
+  background: #FFF6E8 !important;
+}
+
+.fila-detalle > td { background: transparent; }
+
+/* Detalle de las 15 preguntas de una persona, dentro de la tabla de sesiones.
+   Es una rejilla de divs y no una tabla anidada, porque el analizador de HTML
+   desarma una tabla dentro de otra cuando se asigna por innerHTML. */
+.detalle-preguntas {
+  display: grid;
+  gap: 1px;
+  background: #E6E1F5;
+  border: 1px solid #E6E1F5;
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: .88rem;
+}
+
+.detalle-fila {
+  display: grid;
+  grid-template-columns: minmax(200px, 3fr) minmax(110px, 1fr) minmax(110px, 1fr) 58px;
+  gap: 1px;
+}
+
+.detalle-fila > div {
+  background: #fff;
+  padding: .5rem .75rem;
+}
+
+.detalle-fila.cabecera > div {
+  background: #F3F0FF;
+  font-weight: 800;
+}
+
+.detalle-fila.cambio > div {
+  background: #FFF6E8;
+}
+
+@media (max-width: 640px) {
+  .detalle-fila {
+    grid-template-columns: 1fr 1fr;
+  }
+  .detalle-fila > div:first-child { grid-column: 1 / -1; }
+  .detalle-fila.cabecera { display: none; }
+}
+
+/* El detalle vive dentro de una tabla que se desplaza en horizontal. Sin esto
+   heredaría su ancho y las columnas "Después" y "Cambió" quedarían fuera de
+   la vista. Pegado a la izquierda, se lee entero sin desplazar. */
+.fila-detalle .collapse > div {
+  position: sticky;
+  left: 0;
+  width: min(100%, calc(100vw - 8.5rem));
+}
+
+/* Carrusel en pantallas bajas: se aprietan los márgenes para que los botones
+   de avanzar queden a la vista sin desplazar. */
+@media (max-height: 700px) {
+  #pantalla-carrusel .barra-progreso { margin-bottom: .7rem !important; }
+  #pantalla-carrusel .d-flex.mb-2 { margin-bottom: .35rem !important; }
+  #pantalla-carrusel > div:last-of-type { margin-top: .8rem !important; }
+  .marco-historia img { max-height: min(46svh, 300px); }
+  .pantalla-mensaje { min-height: auto; }
+  .pantalla-mensaje .tarjeta { padding: 1.25rem !important; }
+  .pantalla-mensaje h1 { font-size: clamp(1.25rem, 3.4vw, 1.7rem); }
+  .pantalla-mensaje .fs-5 { font-size: 1rem !important; }
+  .pantalla-mensaje [aria-hidden="true"] { font-size: 2.2rem !important; }
+}
+
+/* Último ajuste para pantallas bajas: el aire alrededor del contenido se
+   reduce, y en un celular chico de pie la foto cede un poco más de altura.
+   Va al final del archivo a propósito, porque debe ganar a las reglas de
+   arriba que tienen la misma especificidad. */
+@media (max-height: 700px) {
+  #principal { padding-top: .4rem !important; padding-bottom: .6rem !important; }
+  .cabecera-historia { padding: .6rem 1rem; }
+  .cabecera-historia .h4 { font-size: 1.05rem; }
+  .cabecera-historia [aria-hidden="true"] { font-size: 1.4rem !important; }
+}
+
+@media (max-height: 640px) and (max-width: 659px) {
+  .marco-historia img { max-height: 30svh; }
+  .texto-historia-caja { padding: .75rem .9rem !important; }
+}

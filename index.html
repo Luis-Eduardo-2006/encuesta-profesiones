@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>¿Quién hace este trabajo? — Encuesta</title>
+  <meta name="description" content="Encuesta escolar sobre las profesiones y quién puede realizarlas.">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/estilos.css?v=5" rel="stylesheet">
+</head>
+<body class="fondo-alegre">
+  <a class="saltar-contenido" href="#principal">Saltar al contenido</a>
+
+  <main id="principal" class="container py-4 py-md-5">
+    <div class="tarjeta tarjeta-portada p-4 p-md-5">
+
+      <header class="text-center mb-4">
+        <div style="font-size:3.5rem; line-height:1">🔍</div>
+        <h1 class="titulo mb-2">¿Quién hace este trabajo?</h1>
+        <p class="fs-5 mb-0" style="color:var(--gris)">
+          Vas a ver <strong>5 fotos</strong> de personas trabajando.
+          En cada una responderás <strong>3 preguntas</strong>.
+        </p>
+      </header>
+
+      <div class="alert border-0 rounded-4 mb-4"
+           style="background:#F0ECFF; color:var(--tinta)">
+        <p class="mb-2 fw-bold">Antes de empezar, algo importante:</p>
+        <ul class="mb-0 ps-3">
+          <li>No hay respuestas correctas ni incorrectas. 😊</li>
+          <li>Responde lo primero que pienses, con sinceridad.</li>
+          <li>Tus respuestas solo las verá tu profesor/a.</li>
+        </ul>
+      </div>
+
+      <!-- Avisos de configuración o de error -->
+      <div id="avisos" class="mb-4 oculto"></div>
+
+      <!-- Si quedó una encuesta a medias, se ofrece continuar -->
+      <div id="continuar" class="oculto mb-4">
+        <div class="alert alert-warning border-0 rounded-4">
+          <p class="fw-bold mb-3">Ya habías empezado esta encuesta. ¿Qué quieres hacer?</p>
+          <div class="d-flex flex-wrap gap-2">
+            <a class="btn btn-principal" href="encuesta.html?v=5">Continuar donde me quedé</a>
+            <button type="button" class="btn btn-secundario" id="btn-empezar-de-nuevo">
+              Empezar de nuevo
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Datos del participante: los tres son obligatorios -->
+      <form id="form-inicio" novalidate>
+        <p class="fw-bold mb-1">Cuéntanos un poquito de ti</p>
+        <p class="mb-3" style="color:var(--gris)">
+          Los tres datos son necesarios para empezar.
+        </p>
+
+        <div class="row g-3 mb-4">
+          <div class="col-12 col-sm-8">
+            <label class="form-label fw-bold" for="nombre">Tu nombre</label>
+            <input class="form-control form-control-lg rounded-4" id="nombre"
+                   name="nombre" type="text" maxlength="40" autocomplete="off"
+                   placeholder="Ejemplo: Lucía" required aria-describedby="error-nombre">
+            <div class="invalid-feedback" id="error-nombre">
+              Escribe tu nombre, con al menos 2 letras.
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-4">
+            <label class="form-label fw-bold" for="edad">Tu edad</label>
+            <input class="form-control form-control-lg rounded-4" id="edad"
+                   name="edad" type="number" min="3" max="20" inputmode="numeric"
+                   placeholder="9" required aria-describedby="error-edad">
+            <div class="invalid-feedback" id="error-edad">
+              Escribe tu edad, entre 3 y 20.
+            </div>
+          </div>
+        </div>
+
+        <!-- Género: se elige tocando una tarjeta, no escribiendo -->
+        <fieldset class="mb-4" id="grupo-genero" aria-describedby="error-genero">
+          <legend class="form-label fw-bold float-none">Tú eres</legend>
+
+          <div class="selector-genero" role="radiogroup" aria-labelledby="grupo-genero">
+            <button type="button" class="opcion-genero" data-valor="Niño" role="radio"
+                    aria-checked="false">
+              <span class="emoji" aria-hidden="true">👦</span>
+              <span>Niño</span>
+            </button>
+            <button type="button" class="opcion-genero" data-valor="Niña" role="radio"
+                    aria-checked="false">
+              <span class="emoji" aria-hidden="true">👧</span>
+              <span>Niña</span>
+            </button>
+          </div>
+
+          <p class="mensaje-error oculto mb-0 mt-2" id="error-genero">
+            Toca una de las dos opciones.
+          </p>
+        </fieldset>
+
+        <div class="text-center">
+          <button class="btn btn-principal btn-grande" id="btn-empezar" type="submit">
+            <span class="spinner-border spinner-border-sm me-2 oculto" id="spinner-empezar"
+                  role="status" aria-hidden="true"></span>
+            <span id="texto-empezar">¡Empezar! 🚀</span>
+          </button>
+        </div>
+      </form>
+
+    </div>
+
+    <footer class="pie text-center mt-4">
+      Proyecto de ciencias sobre estereotipos de género en las profesiones ·
+      <a href="login.html?v=5" class="text-decoration-none" style="color:var(--gris)">Acceso docente</a>
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script type="module">
+    import {
+      crearSesion, idSesion, encuestaTerminada, reiniciarLocal,
+      avisarSiFaltaConfiguracion, mostrarError, limpiarError
+    } from './assets/js/encuesta.js?v=5';
+
+    const avisos     = document.getElementById('avisos');
+    const formulario = document.getElementById('form-inicio');
+    const boton      = document.getElementById('btn-empezar');
+    const spinner    = document.getElementById('spinner-empezar');
+    const textoBoton = document.getElementById('texto-empezar');
+    const bloqueCont = document.getElementById('continuar');
+    const campoNombre = document.getElementById('nombre');
+    const campoEdad   = document.getElementById('edad');
+    const botonesGen  = [...document.querySelectorAll('.opcion-genero')];
+    const errorGenero = document.getElementById('error-genero');
+
+    let generoElegido = null;
+
+    // Sin credenciales no tiene sentido dejar empezar.
+    const faltaConfig = avisarSiFaltaConfiguracion(avisos);
+    if (faltaConfig) boton.disabled = true;
+
+    // ¿Quedó una encuesta a medias en este dispositivo?
+    if (idSesion() && !encuestaTerminada()) {
+      bloqueCont.classList.remove('oculto');
+      formulario.classList.add('oculto');
+    }
+
+    document.getElementById('btn-empezar-de-nuevo').addEventListener('click', () => {
+      reiniciarLocal();
+      bloqueCont.classList.add('oculto');
+      formulario.classList.remove('oculto');
+    });
+
+    /* Los tres datos son obligatorios: sin ellos no se puede empezar. */
+
+    const nombreValido = () => {
+      const v = campoNombre.value.trim();
+      return v.length >= 2 && v.length <= 40;
+    };
+
+    const edadValida = () => {
+      const v = campoEdad.value.trim();
+      if (v === '') return false;
+      const n = Number(v);
+      return Number.isInteger(n) && n >= 3 && n <= 20;
+    };
+
+    const generoValido = () => generoElegido !== null;
+
+    const REGLAS = [
+      { campo: campoNombre, valida: nombreValido },
+      { campo: campoEdad,   valida: edadValida }
+    ];
+
+    // Elegir género: solo una opción a la vez.
+    botonesGen.forEach((boton) => {
+      boton.addEventListener('click', () => {
+        generoElegido = boton.dataset.valor;
+        botonesGen.forEach((otro) => {
+          const esta = otro === boton;
+          otro.classList.toggle('elegida', esta);
+          otro.setAttribute('aria-checked', String(esta));
+        });
+        errorGenero.classList.add('oculto');
+        document.getElementById('grupo-genero').classList.remove('falta');
+      });
+    });
+
+    /** Marca en rojo lo que falta y devuelve el primer elemento incompleto. */
+    function revisarFormulario() {
+      let primeroMal = null;
+
+      REGLAS.forEach(({ campo, valida }) => {
+        const bien = valida();
+        campo.classList.toggle('is-invalid', !bien);
+        if (!bien && !primeroMal) primeroMal = campo;
+      });
+
+      const generoBien = generoValido();
+      errorGenero.classList.toggle('oculto', generoBien);
+      document.getElementById('grupo-genero').classList.toggle('falta', !generoBien);
+      if (!generoBien && !primeroMal) primeroMal = botonesGen[0];
+
+      return primeroMal;
+    }
+
+    // Al escribir, el aviso rojo desaparece en cuanto el dato queda bien.
+    REGLAS.forEach(({ campo, valida }) => {
+      campo.addEventListener('input', () => {
+        if (valida()) campo.classList.remove('is-invalid');
+      });
+    });
+
+    formulario.addEventListener('submit', async (evento) => {
+      evento.preventDefault();
+      limpiarError(avisos);
+
+      const faltante = revisarFormulario();
+      if (faltante) {
+        faltante.focus();
+        return;
+      }
+
+      boton.disabled = true;
+      spinner.classList.remove('oculto');
+      textoBoton.textContent = 'Preparando tu encuesta…';
+
+      try {
+        await crearSesion({
+          nombre: campoNombre.value,
+          edad: Number(campoEdad.value.trim()),
+          genero: generoElegido
+        });
+        window.location.href = 'encuesta.html?v=5';
+      } catch (error) {
+        mostrarError(avisos, error);
+        boton.disabled = false;
+        spinner.classList.add('oculto');
+        textoBoton.textContent = '¡Empezar! 🚀';
+      }
+    });
+  </script>
+</body>
+</html>

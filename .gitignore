@@ -1,0 +1,18 @@
+# assets/js/config.js SÍ se versiona: la anon key es pública por diseño y hace
+# falta en el repositorio para que GitHub Pages sirva la encuesta funcionando.
+# Lo que protege los datos son las políticas RLS de sql/schema.sql.
+
+# Sistema operativo y editores
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Exportaciones del dashboard
+encuesta-respuestas-*.csv
+encuesta-resumen-*.csv
+encuesta-antes-despues-*.csv
+
+# Token de acceso a Supabase
+.mcp.json

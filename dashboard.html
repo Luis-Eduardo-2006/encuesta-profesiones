@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resultados — ¿Quién hace este trabajo?</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/estilos.css?v=5" rel="stylesheet">
+</head>
+<body class="pantalla-admin">
+
+  <!-- Barra superior -->
+  <nav class="navbar bg-white border-bottom sticky-top">
+    <div class="container-fluid px-3 px-lg-4">
+      <span class="navbar-brand fw-bold mb-0">📊 Resultados de la encuesta</span>
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <span class="d-none d-md-inline" style="color:var(--gris); font-size:.9rem"
+              id="correo-admin"></span>
+        <button class="btn btn-sm btn-secundario" id="btn-actualizar" type="button">
+          ↻ Actualizar
+        </button>
+        <button class="btn btn-sm btn-principal" id="btn-exportar" type="button">
+          ⬇ Exportar CSV
+        </button>
+        <button class="btn btn-sm btn-outline-danger rounded-pill fw-bold"
+                id="btn-abrir-reinicio" type="button">
+          Reiniciar dashboard
+        </button>
+        <button class="btn btn-sm btn-link text-decoration-none" id="btn-salir" type="button">
+          Salir
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container-fluid px-3 px-lg-4 py-4">
+
+    <div id="avisos" class="mb-3 oculto"></div>
+
+    <!-- Cargando -->
+    <div id="cargando" class="text-center py-5">
+      <div class="spinner-border" style="color:var(--morado); width:3rem; height:3rem" role="status">
+        <span class="visually-hidden">Cargando…</span>
+      </div>
+      <p class="fw-bold mt-3 mb-0">Cargando resultados…</p>
+    </div>
+
+    <div id="contenido" class="oculto">
+
+      <!-- Filtros -->
+      <section class="tarjeta p-3 p-md-4 mb-4">
+        <div class="row g-3 align-items-end">
+          <div class="col-6 col-lg-3">
+            <label class="form-label fw-bold mb-1" for="filtro-ronda">Ronda</label>
+            <select class="form-select" id="filtro-ronda"></select>
+          </div>
+          <div class="col-6 col-lg-3">
+            <label class="form-label fw-bold mb-1" for="filtro-genero">Género</label>
+            <select class="form-select" id="filtro-genero"></select>
+          </div>
+          <div class="col-6 col-lg-2">
+            <label class="form-label fw-bold mb-1" for="filtro-desde">Desde</label>
+            <input class="form-control" id="filtro-desde" type="date">
+          </div>
+          <div class="col-6 col-lg-2">
+            <label class="form-label fw-bold mb-1" for="filtro-hasta">Hasta</label>
+            <input class="form-control" id="filtro-hasta" type="date">
+          </div>
+          <div class="col-12 col-lg-2">
+            <button class="btn btn-secundario w-100" id="btn-limpiar-filtros" type="button">
+              Limpiar filtros
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tarjetas de resumen -->
+      <section class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+          <div class="tarjeta-resumen">
+            <div class="etiqueta">Participantes</div>
+            <div class="valor" id="kpi-participantes">0</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="tarjeta-resumen">
+            <div class="etiqueta">Terminaron las dos vueltas</div>
+            <div class="valor" id="kpi-completadas">0</div>
+            <div style="color:var(--gris); font-size:.85rem">
+              <span id="kpi-tasa">0%</span> de finalización
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="tarjeta-resumen" style="border:2px solid #FFD79B">
+            <div class="etiqueta">Respuestas que cambiaron</div>
+            <div class="valor" id="kpi-cambios">0</div>
+            <div style="color:var(--gris); font-size:.85rem" id="kpi-cambios-detalle"></div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="tarjeta-resumen">
+            <div class="etiqueta">Última respuesta</div>
+            <div class="valor" style="font-size:1.25rem" id="kpi-ultima">—</div>
+            <div style="color:var(--gris); font-size:.85rem" id="kpi-respuestas"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Indicador principal del proyecto -->
+      <section class="tarjeta p-3 p-md-4 mb-4">
+        <h2 class="h4 mb-1">Indicador principal: ¿en qué trabajos se asume que es un varón?</h2>
+        <p style="color:var(--gris)" class="mb-3">
+          Porcentaje de respuestas “Un varón” en la pregunta 1 de cada profesión,
+          <strong>antes</strong> y <strong>después</strong> de conocer las historias
+          de las mujeres. La diferencia entre las dos barras es lo que mide el proyecto.
+        </p>
+        <div class="caja-grafico caja-grafico-alta">
+          <canvas id="grafico-principal"></canvas>
+        </div>
+        <p class="fw-bold mt-3 mb-0" id="resumen-indicador"></p>
+      </section>
+
+      <!-- Vistas cruzadas -->
+      <section class="row g-4 mb-4">
+        <div class="col-12 col-lg-6">
+          <div class="tarjeta p-3 p-md-4 h-100">
+            <div class="caja-grafico"><canvas id="grafico-edad"></canvas></div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6">
+          <div class="tarjeta p-3 p-md-4 h-100">
+            <div class="caja-grafico"><canvas id="grafico-genero"></canvas></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Detalle por profesión -->
+      <h2 class="h4 mb-3">Detalle por profesión</h2>
+      <div id="bloques-profesiones"></div>
+
+      <!-- Tabla de sesiones -->
+      <section class="tarjeta p-3 p-md-4 mb-5">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+          <h2 class="h4 mb-0">Respuestas por sesión</h2>
+          <span style="color:var(--gris)" id="conteo-tabla"></span>
+        </div>
+        <div class="contenedor-tabla">
+          <table class="table table-hover align-middle tabla-respuestas mb-0" id="tabla-sesiones"></table>
+        </div>
+        <p class="mt-3 mb-0" style="color:var(--gris); font-size:.9rem">
+          Las columnas de profesión muestran la pregunta 1
+          (“¿Quién crees que está realizando este trabajo?”) como
+          <em>antes → después</em>. Las celdas resaltadas son las que cambiaron.
+          El botón <strong>15 ▾</strong> abre las quince preguntas de esa persona.
+        </p>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ================= Modal de reinicio ================= -->
+  <div class="modal fade" id="modal-reinicio" tabindex="-1" aria-hidden="true"
+       aria-labelledby="titulo-modal">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content rounded-4">
+
+        <div class="modal-header">
+          <h2 class="modal-title h5" id="titulo-modal">Reiniciar el dashboard</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <div class="modal-body">
+
+          <p class="fw-bold mb-2">Esto es lo que hay ahora mismo:</p>
+          <ul id="conteo-a-borrar" class="mb-4"></ul>
+
+          <div class="alert alert-info rounded-4">
+            <p class="fw-bold mb-2">1. Guarda una copia antes de continuar</p>
+            <button class="btn btn-sm btn-secundario" id="btn-csv-modal" type="button">
+              ⬇ Descargar CSV ahora
+            </button>
+          </div>
+
+          <p class="fw-bold mb-2">2. Elige qué hacer</p>
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="radio" name="modo-reinicio"
+                   id="modo-nueva-ronda" value="ronda" checked>
+            <label class="form-check-label" for="modo-nueva-ronda">
+              <strong>Cerrar la ronda y empezar una nueva</strong> (recomendado).<br>
+              <span style="color:var(--gris); font-size:.92rem">
+                El dashboard queda en cero, pero nada se borra: el histórico se sigue
+                consultando con el filtro de ronda. Sirve para aplicar la encuesta a
+                otro grupo o en otra fecha.
+              </span>
+            </label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="modo-reinicio"
+                   id="modo-borrar" value="borrar">
+            <label class="form-check-label" for="modo-borrar">
+              <strong>Borrar definitivamente</strong><br>
+              <span style="color:var(--gris); font-size:.92rem">
+                Elimina todas las sesiones, respuestas y rondas. No se puede deshacer.
+              </span>
+            </label>
+          </div>
+
+          <div class="alert alert-danger rounded-4 oculto" id="aviso-definitivo">
+            ⚠️ Vas a borrar <strong>todos</strong> los datos de <strong>todas</strong> las rondas.
+            Esta acción no tiene vuelta atrás.
+          </div>
+
+          <p class="fw-bold mb-2">3. Confirma que eres tú</p>
+          <div class="mb-3">
+            <label class="form-label" for="reinicio-clave">Tu contraseña</label>
+            <input class="form-control" id="reinicio-clave" type="password"
+                   autocomplete="current-password">
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label" for="reinicio-palabra">
+              Escribe <code>REINICIAR</code> para confirmar
+            </label>
+            <input class="form-control" id="reinicio-palabra" type="text"
+                   autocomplete="off" placeholder="REINICIAR">
+          </div>
+
+          <div id="aviso-modal" class="mt-3 oculto"></div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secundario" type="button" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-principal" id="btn-confirmar-reinicio" type="button" disabled>
+            <span class="spinner-border spinner-border-sm me-2 oculto" id="spinner-reinicio"
+                  role="status" aria-hidden="true"></span>
+            <span id="texto-reinicio">Cerrar ronda y empezar de nuevo</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script type="module" src="assets/js/dashboard.js?v=5"></script>
+</body>
+</html>

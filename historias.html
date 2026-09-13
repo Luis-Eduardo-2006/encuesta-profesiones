@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conozcamos a estas mujeres — ¿Quién hace este trabajo?</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/estilos.css?v=5" rel="stylesheet">
+</head>
+<body class="fondo-alegre">
+  <a class="saltar-contenido" href="#principal">Saltar al contenido</a>
+
+  <main id="principal" class="container py-4 py-md-5" style="max-width:920px">
+
+    <!-- ============ 1. Pantalla de entrada ============ -->
+    <section id="pantalla-entrada" class="pantalla-mensaje">
+      <div class="tarjeta p-4 p-md-5 text-center">
+        <div style="font-size:4rem; line-height:1" aria-hidden="true">✨</div>
+        <h1 class="titulo mb-3">Ahora conozcamos el caso de estas mujeres…</h1>
+        <p class="fs-5 mb-4" style="color:var(--gris)">
+          Ya respondiste lo que pensabas. Mira quiénes hacen de verdad esos
+          cinco trabajos, y luego te preguntaremos otra vez.
+        </p>
+        <button class="btn btn-principal btn-grande" id="btn-empezar-historias" type="button">
+          Ver sus historias 👀
+        </button>
+      </div>
+    </section>
+
+    <!-- ============ 2. El carrusel ============ -->
+    <section id="pantalla-carrusel" class="oculto">
+
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="texto-progreso" id="texto-diapositiva">Historia 1 de 17</span>
+        <span class="fw-bold" id="nombre-grupo" style="color:var(--morado)"></span>
+      </div>
+
+      <div class="progress barra-progreso mb-4" role="progressbar"
+           aria-label="Avance de las historias" aria-valuemin="0" aria-valuemax="100"
+           id="contenedor-progreso" aria-valuenow="0">
+        <div class="progress-bar" id="barra"></div>
+      </div>
+
+      <article class="tarjeta tarjeta-historia overflow-hidden">
+        <div class="cabecera-historia" id="cabecera-historia">
+          <div class="d-flex align-items-center gap-2">
+            <span style="font-size:2rem" aria-hidden="true" id="emoji-historia">🚀</span>
+            <div>
+              <div class="small text-uppercase opacity-75" id="trabajo-historia">Trabajo 1 de 5</div>
+              <h2 class="h4 mb-0" id="titulo-historia">Astronautas</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="marco-historia">
+          <img id="foto-historia" src="" alt="" decoding="async">
+        </div>
+
+        <div class="texto-historia-caja p-4">
+          <p class="fw-bold mb-2 fs-5" id="pie-historia"></p>
+          <p class="mb-0" id="texto-historia" style="color:var(--gris)"></p>
+        </div>
+      </article>
+
+      <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap mt-4">
+        <button class="btn btn-secundario" id="btn-atras" type="button">← Anterior</button>
+        <div class="puntos" id="puntos" aria-hidden="true"></div>
+        <button class="btn btn-principal" id="btn-adelante" type="button">Siguiente →</button>
+      </div>
+    </section>
+
+    <!-- ============ 3. Pantalla de cierre ============ -->
+    <section id="pantalla-cierre" class="oculto pantalla-mensaje">
+      <div class="tarjeta p-4 p-md-5 text-center">
+        <div style="font-size:4rem; line-height:1" aria-hidden="true">🤔</div>
+        <h1 class="titulo mb-3">
+          Y después de mostrarte el caso de estas mujeres…
+          <span style="color:var(--morado)">¿Sigues pensando igual?</span>
+        </h1>
+        <p class="fs-5 mb-4" style="color:var(--gris)">
+          Vamos a ver las mismas cinco fotos y las mismas preguntas.
+          Responde otra vez lo que pienses ahora. No hay respuestas correctas.
+        </p>
+        <button class="btn btn-principal btn-grande" id="btn-responder-otra-vez" type="button">
+          Responder otra vez →
+        </button>
+        <p class="mt-3 mb-0" style="color:var(--gris); font-size:.95rem">
+          <button type="button" class="btn btn-link p-0" id="btn-ver-otra-vez"
+                  style="color:var(--gris)">Ver las historias de nuevo</button>
+        </p>
+      </div>
+    </section>
+
+    <div id="avisos" class="oculto mt-3"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script type="module">
+    import { idSesion, empezarSegundaVuelta } from './assets/js/encuesta.js?v=5';
+
+    const $ = (id) => document.getElementById(id);
+
+    /* ------------------------------------------------------------------
+       Las 17 diapositivas, agrupadas por profesión. El texto es del
+       proyecto; las fotos están en assets/img_ppts/.
+       ------------------------------------------------------------------ */
+    const HISTORIAS = [
+      /* --- 1. Astronautas -------------------------------------------- */
+      {
+        grupo: 'Astronautas', trabajo: 1, emoji: '🚀', color: 'color-1',
+        imagen: 'astronautas/01-koch-y-meir.png',
+        pie: 'Christina Koch y Jessica Meir',
+        texto: 'Son astronautas de la NASA. En octubre de 2019 protagonizaron el primer paseo espacial de la historia realizado solo por mujeres.',
+        alt: 'Retratos de Christina Koch y Jessica Meir con sus trajes espaciales.'
+      },
+      {
+        grupo: 'Astronautas', trabajo: 1, emoji: '🚀', color: 'color-1',
+        imagen: 'astronautas/02-paseo-espacial.png',
+        pie: 'Siete horas y diecisiete minutos fuera de la nave',
+        texto: 'Salieron al vacío para reemplazar una unidad de carga y descarga de batería que se había averiado en la Estación Espacial Internacional. Trabajaron flotando, a más de 400 kilómetros sobre la Tierra.',
+        alt: 'Dos astronautas trabajando en el exterior de la Estación Espacial Internacional.'
+      },
+      {
+        grupo: 'Astronautas', trabajo: 1, emoji: '🚀', color: 'color-1',
+        imagen: 'astronautas/03-en-la-estacion.png',
+        pie: 'Y además se divirtieron',
+        texto: 'Vivir sin gravedad significa flotar todo el día. Christina pasó 328 días seguidos en el espacio, la misión más larga hecha por una mujer.',
+        alt: 'Christina Koch y Jessica Meir flotando dentro de la Estación Espacial Internacional.'
+      },
+
+      /* --- 2. Operadora de excavadora -------------------------------- */
+      {
+        grupo: 'Operadora de excavadora', trabajo: 2, emoji: '🚜', color: 'color-2',
+        imagen: 'excavadora/01-juana-torres.png',
+        pie: 'Juana Torres López, del Cusco',
+        texto: 'A los 30 años, sin saber conducir ni un auto, se subió por primera vez a una excavadora. Hoy maneja máquinas de muchas toneladas en minería y construcción.',
+        alt: 'Juana Torres con casco y uniforme, junto a una excavadora.'
+      },
+      {
+        grupo: 'Operadora de excavadora', trabajo: 2, emoji: '🚜', color: 'color-2',
+        imagen: 'excavadora/02-en-la-excavadora.png',
+        pie: 'La única mujer finalista entre más de 2,100 personas',
+        texto: 'En 2019 fue la única mujer que llegó a la final del concurso "El Mejor Operador del Perú". Ha trabajado para varias empresas internacionales.',
+        alt: 'Juana Torres a los mandos de una excavadora.'
+      },
+      {
+        grupo: 'Operadora de excavadora', trabajo: 2, emoji: '🚜', color: 'color-2',
+        imagen: 'excavadora/03-superar.png',
+        pie: '"He aprendido a superar todas las dificultades"',
+        texto: 'Lo dice ella misma. Aprender a manejar una excavadora le tomó práctica y paciencia, igual que a cualquier persona que empieza algo nuevo.',
+        alt: 'Juana Torres hablando frente a su excavadora.'
+      },
+
+      /* --- 3. Físicas e ingenieras nucleares ------------------------- */
+      {
+        grupo: 'Físicas e ingenieras nucleares', trabajo: 3, emoji: '⚛️', color: 'color-3',
+        imagen: 'nucleares/01-marie-curie.png',
+        pie: 'Marie Curie (1867-1934)',
+        texto: 'Física y química polaca. Fue la primera mujer en ganar un Premio Nobel, y la primera persona en ganarlo en dos campos distintos: Física y Química, por sus investigaciones sobre la radiactividad.',
+        alt: 'Marie Curie trabajando en su laboratorio.'
+      },
+      {
+        grupo: 'Físicas e ingenieras nucleares', trabajo: 3, emoji: '⚛️', color: 'color-3',
+        imagen: 'nucleares/02-lise-meitner.png',
+        pie: 'Lise Meitner (1878-1968)',
+        texto: 'Física austriaca que descubrió la fisión nuclear: el proceso que divide los átomos y libera una enorme cantidad de energía. Es la base de las centrales nucleares de hoy.',
+        alt: 'Lise Meitner en su mesa de trabajo del laboratorio.'
+      },
+      {
+        grupo: 'Físicas e ingenieras nucleares', trabajo: 3, emoji: '⚛️', color: 'color-3',
+        imagen: 'nucleares/03-shirly-rodriguez.png',
+        pie: 'Shirly Rodríguez Rojas, peruana, 43 años',
+        texto: 'Ingeniera nuclear. Trabaja como asesora del Departamento de Energía de los Estados Unidos.',
+        alt: 'Shirly Rodríguez con bata blanca en un laboratorio.'
+      },
+      {
+        grupo: 'Físicas e ingenieras nucleares', trabajo: 3, emoji: '⚛️', color: 'color-3',
+        imagen: 'nucleares/04-yaela-beraun.png',
+        pie: 'Yaela Beraun Bellido, peruana, 33 años',
+        texto: 'Es la primera mujer ingeniera del Perú que opera el reactor nuclear RP-10, en el Centro Nuclear Racso, en Lima.',
+        alt: 'Yaela Beraun junto al panel de control del reactor nuclear.'
+      },
+
+      /* --- 4. Conductoras de camión ---------------------------------- */
+      {
+        grupo: 'Conductoras de camión y semitráiler', trabajo: 4, emoji: '🚚', color: 'color-4',
+        imagen: 'conductoras/01-maria-cruz.png',
+        pie: 'María Cruz',
+        texto: 'Conduce vehículos de carga pesada en el Perú. Solo alrededor del 2% de las personas autorizadas para manejar estos camiones son mujeres, según el Ministerio de Transportes y Comunicaciones.',
+        alt: 'María Cruz al volante de su camión.'
+      },
+      {
+        grupo: 'Conductoras de camión y semitráiler', trabajo: 4, emoji: '🚚', color: 'color-4',
+        imagen: 'conductoras/02-lidia-quispe.png',
+        pie: 'Lidia Quispe',
+        texto: 'Maneja camiones en faenas mineras, con casco, lentes y chaleco de seguridad. Un semitráiler cargado puede pesar más de 40 toneladas.',
+        alt: 'Lidia Quispe en la cabina de su camión, levantando el pulgar.'
+      },
+      {
+        grupo: 'Conductoras de camión y semitráiler', trabajo: 4, emoji: '🚚', color: 'color-4',
+        imagen: 'conductoras/03-xiomara-paredes.png',
+        pie: 'Xiomara Paredes',
+        texto: 'Otra de las conductoras peruanas que cada día rompen el estereotipo de que este trabajo es "de hombres".',
+        alt: 'Xiomara Paredes asomada desde la cabina de un camión verde.'
+      },
+      {
+        grupo: 'Conductoras de camión y semitráiler', trabajo: 4, emoji: '🚚', color: 'color-4',
+        imagen: 'conductoras/04-gladys-condor.png',
+        pie: 'Gladys Cóndor',
+        texto: 'Conduce semitráileres de transporte de carga. Cada vez son más las mujeres que sacan su licencia para manejar vehículos pesados en el Perú.',
+        alt: 'Gladys Cóndor de pie en el estribo de su semitráiler.'
+      },
+
+      /* --- 5. Bomberas ----------------------------------------------- */
+      {
+        grupo: 'Bomberas del Perú', trabajo: 5, emoji: '🚒', color: 'color-5',
+        imagen: 'bomberas/01-bomberas.png',
+        pie: 'Más de 7 mil mujeres bomberas',
+        texto: 'Integran el Cuerpo General de Bomberos Voluntarios del Perú. De los 17,367 efectivos en servicio activo, 7,141 son mujeres: el 41%.',
+        alt: 'Cinco bomberas con uniforme levantando el pulgar frente a un camión.'
+      },
+      {
+        grupo: 'Bomberas del Perú', trabajo: 5, emoji: '🚒', color: 'color-5',
+        imagen: 'bomberas/02-compania-magdalena.png',
+        pie: 'Y muchas comandan su propia compañía',
+        texto: 'No solo participan: varias dirigen Compañías de Bomberos en todo el país. Ser bombero voluntario significa dejar lo que estés haciendo y salir cuando suena la alarma.',
+        alt: 'Bomberas del Cuerpo General de Bomberos Voluntarios sobre un camión de la compañía Magdalena 36.'
+      },
+      {
+        grupo: 'Bomberas del Perú', trabajo: 5, emoji: '🚒', color: 'color-5',
+        imagen: 'bomberas/03-en-accion.png',
+        pie: 'Apagando incendios de verdad',
+        texto: 'Manejan la manguera, entran a los edificios y rescatan personas. El equipo completo de un bombero pesa más de 20 kilos.',
+        alt: 'Dos bomberas dirigiendo el chorro de una manguera contra el fuego.'
+      }
+    ];
+
+    /* --------------------------------------------------- Elementos --- */
+    const entrada  = $('pantalla-entrada');
+    const carrusel = $('pantalla-carrusel');
+    const cierre   = $('pantalla-cierre');
+    const foto     = $('foto-historia');
+    const puntos   = $('puntos');
+
+    let actual = 0;
+
+    // Sin sesión no debería estar aquí.
+    if (!idSesion()) window.location.replace('index.html?v=5');
+
+    /* Puntitos de avance, uno por diapositiva. */
+    HISTORIAS.forEach((_, i) => {
+      const punto = document.createElement('span');
+      punto.className = 'punto';
+      punto.dataset.indice = String(i);
+      puntos.appendChild(punto);
+    });
+
+    function precargar(i) {
+      if (i < 0 || i >= HISTORIAS.length) return;
+      const img = new Image();
+      img.src = 'assets/img_ppts/' + HISTORIAS[i].imagen;
+    }
+
+    function pintar() {
+      const h = HISTORIAS[actual];
+
+      $('cabecera-historia').className = 'cabecera-historia ' + h.color;
+      $('emoji-historia').textContent = h.emoji;
+      $('trabajo-historia').textContent = `Trabajo ${h.trabajo} de 5`;
+      $('titulo-historia').textContent = h.grupo;
+      $('nombre-grupo').textContent = h.grupo;
+      $('pie-historia').textContent = h.pie;
+      $('texto-historia').textContent = h.texto;
+
+      foto.src = 'assets/img_ppts/' + h.imagen;
+      foto.alt = h.alt;
+
+      const numero = actual + 1;
+      $('texto-diapositiva').textContent = `Historia ${numero} de ${HISTORIAS.length}`;
+      const porcentaje = Math.round((numero / HISTORIAS.length) * 100);
+      $('barra').style.width = porcentaje + '%';
+      $('contenedor-progreso').setAttribute('aria-valuenow', String(porcentaje));
+
+      Array.from(puntos.children).forEach((punto, i) => {
+        punto.classList.toggle('activo', i === actual);
+      });
+
+      $('btn-atras').disabled = actual === 0;
+      $('btn-adelante').textContent = actual === HISTORIAS.length - 1
+        ? 'Ya las conocí →' : 'Siguiente →';
+
+      precargar(actual + 1);
+
+      // A propósito no se desplaza la página al cambiar de diapositiva: si lo
+      // hiciera, el botón "Siguiente" se movería de debajo del dedo del niño.
+      // Solo se sube si la tarjeta quedó por encima de lo que se ve.
+      const tope = document.querySelector('.cabecera-historia').getBoundingClientRect().top;
+      if (tope < 0) window.scrollTo({ top: window.scrollY + tope - 12 });
+    }
+
+    function mostrar(seccion) {
+      [entrada, carrusel, cierre].forEach((s) => s.classList.add('oculto'));
+      seccion.classList.remove('oculto');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ------------------------------------------------ Navegación --- */
+
+    $('btn-empezar-historias').addEventListener('click', () => {
+      mostrar(carrusel);
+      pintar();
+    });
+
+    $('btn-atras').addEventListener('click', () => {
+      if (actual === 0) return;
+      actual -= 1;
+      pintar();
+    });
+
+    $('btn-adelante').addEventListener('click', () => {
+      if (actual === HISTORIAS.length - 1) {
+        mostrar(cierre);
+        return;
+      }
+      actual += 1;
+      pintar();
+    });
+
+    // Flechas del teclado, por comodidad en computadora.
+    document.addEventListener('keydown', (e) => {
+      if (carrusel.classList.contains('oculto')) return;
+      if (e.key === 'ArrowRight') $('btn-adelante').click();
+      if (e.key === 'ArrowLeft') $('btn-atras').click();
+    });
+
+    $('btn-ver-otra-vez').addEventListener('click', () => {
+      actual = 0;
+      mostrar(carrusel);
+      pintar();
+    });
+
+    $('btn-responder-otra-vez').addEventListener('click', () => {
+      empezarSegundaVuelta();
+      window.location.href = 'encuesta.html?v=5';
+    });
+
+    precargar(0);
+  </script>
+</body>
+</html>
