@@ -46,6 +46,7 @@ assets/js/auth.js           sesión del administrador
 assets/js/dashboard.js      métricas, gráficos, CSV y reinicio
 sql/schema.sql        tablas, datos de siembra y políticas RLS
 servidor.py           servidor local sin caché, para probar
+subir.py              envía tus cambios a GitHub en un comando
 _headers              cabeceras de caché para Netlify
 ```
 
@@ -181,6 +182,39 @@ páginas. Si el HTML guardado es anterior a un cambio y el JavaScript ya es el
 nuevo, el formulario deja de funcionar aunque el código esté bien: se rellenan
 los tres datos, se pulsa Empezar y no pasa nada. `servidor.py` manda `no-store`
 y así cada recarga trae siempre lo último.
+
+## Seguir editando y subir los cambios
+
+El proyecto vive en [GitHub](https://github.com/Luis-Eduardo-2006/encuesta-profesiones).
+Editas aquí, en tu carpeta, y cuando quieras lo envías. Hay dos formas.
+
+### Con Visual Studio Code, sin escribir nada
+
+1. Abre el panel **Control de código fuente** (el icono de las ramitas, o Ctrl+Shift+G).
+2. Escribe arriba qué cambiaste, por ejemplo "cambié el texto de las bomberas".
+3. Pulsa **Confirmar** y luego **Sincronizar cambios**.
+
+### Con un comando
+
+```bash
+python subir.py
+```
+
+Te muestra qué archivos cambiaron, te pregunta qué hiciste, y lo envía. También
+acepta el mensaje directamente:
+
+```bash
+python subir.py "Cambié el texto de las bomberas"
+```
+
+Antes de enviar nada comprueba que no se escape ningún archivo con credenciales.
+Si `.mcp.json` apareciera entre los cambios, se detiene en vez de publicarlo.
+
+> Los cambios que haces en tu carpeta **no llegan solos** a GitHub. Hasta que no
+> confirmes y envíes, solo existen en tu computador. Eso es a propósito: te deja
+> probar tranquilo y subir solo cuando esté como quieres.
+
+Si publicaste con GitHub Pages, cada envío actualiza el sitio en uno o dos minutos.
 
 ## 7. Desplegar
 
