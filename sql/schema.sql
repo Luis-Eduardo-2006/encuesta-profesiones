@@ -37,9 +37,9 @@ create table if not exists public.sesiones (
   grado       text,
   completada  boolean     not null default false,
   creada_en   timestamptz not null default now(),
-  constraint sesiones_edad_valida   check (edad between 6 and 12),
+  constraint sesiones_edad_valida   check (edad between 3 and 20),
   constraint sesiones_nombre_valido check (char_length(btrim(nombre)) between 2 and 40),
-  constraint sesiones_genero_valido check (genero in ('Niño', 'Niña', 'Prefiero no decirlo'))
+  constraint sesiones_genero_valido check (genero in ('Niño', 'Niña'))
 );
 
 -- Puesta al día de bases creadas con la versión anterior del formulario,
@@ -82,17 +82,15 @@ begin
   alter table public.sesiones drop constraint if exists sesiones_nombre_valido;
   alter table public.sesiones drop constraint if exists sesiones_genero_valido;
 
-  -- El formulario ahora ofrece un desplegable de 6 a 12, el rango real de
-  -- primaria. 'not valid' deja intactas las sesiones ya recogidas.
   alter table public.sesiones add constraint sesiones_edad_valida
-    check (edad between 6 and 12) not valid;
+    check (edad between 3 and 20);
   alter table public.sesiones add constraint sesiones_nombre_valido
     check (char_length(btrim(nombre)) between 2 and 40);
   -- 'not valid' significa: se exige a todo lo que se inserte o modifique desde
   -- ahora, pero no se revisan las filas antiguas. Así las sesiones recogidas
   -- con un formulario anterior siguen existiendo sin inventarles un género.
   alter table public.sesiones add constraint sesiones_genero_valido
-    check (genero in ('Niño', 'Niña', 'Prefiero no decirlo')) not valid;
+    check (genero in ('Niño', 'Niña')) not valid;
 end
 $migra$;
 
@@ -421,24 +419,14 @@ on conflict (etiqueta) do update
       nombre_real = excluded.nombre_real,
       imagen      = excluded.imagen;
 
--- 5.3 Las 10 preguntas con sus opciones: las mismas 2 por cada profesión.
---
--- Antes eran tres por profesión. Se consolidaron en dos para no cansar a niños
--- de 6 a 12 años: la que mide qué supone el niño, y una sola pregunta directa
--- sobre quién lo haría mejor.
+-- 5.3 Las 15 preguntas con sus opciones: las mismas 3 por cada profesión.
 do $seed$
 declare
   prof  record;
   id_p1 bigint;
   id_p2 bigint;
+  id_p3 bigint;
 begin
-  -- La antigua tercera pregunta desaparece, y la segunda cambia de texto y de
-  -- opciones. Se borran primero para que ninguna respuesta vieja quede colgada
-  -- de una opción que ahora dice otra cosa.
-  delete from public.preguntas where codigo = 'p3';
-  delete from public.opciones
-   where pregunta_id in (select id from public.preguntas where codigo = 'p2');
-
   for prof in select id from public.profesiones order by orden loop
 
     -- P1 ------------------------------------------------------------------
@@ -454,17 +442,30 @@ begin
     on conflict (pregunta_id, orden) do update
       set texto = excluded.texto, emoji = excluded.emoji;
 
-    -- P2: la pregunta consolidada ---------------------------------------
+    -- P2 ------------------------------------------------------------------
     insert into public.preguntas (profesion_id, orden, codigo, texto)
-    values (prof.id, 2, 'p2', '¿Crees que una mujer y un hombre pueden hacer este trabajo igual de bien?')
+    values (prof.id, 2, 'p2', '¿Consideras que esta profesión puede ser realizada tanto por varones como por mujeres?')
     on conflict (profesion_id, codigo) do update set texto = excluded.texto
     returning id into id_p2;
 
     insert into public.opciones (pregunta_id, orden, texto, emoji) values
-      (id_p2, 1, 'El hombre lo haría mejor',        '👨'),
-      (id_p2, 2, 'La mujer lo haría mejor',         '👩'),
-      (id_p2, 3, 'Los dos lo harían igual de bien', '🧑‍🤝‍🧑'),
-      (id_p2, 4, 'No estoy seguro/a',               '🤔')
+      (id_p2, 1, 'Sí',                '✅'),
+      (id_p2, 2, 'No',                '❌'),
+      (id_p2, 3, 'No estoy seguro/a', '🤔')
+    on conflict (pregunta_id, orden) do update
+      set texto = excluded.texto, emoji = excluded.emoji;
+
+    -- P3 ------------------------------------------------------------------
+    insert into public.preguntas (profesion_id, orden, codigo, texto)
+    values (prof.id, 3, 'p3', '¿Quién crees que puede realizar mejor este trabajo?')
+    on conflict (profesion_id, codigo) do update set texto = excluded.texto
+    returning id into id_p3;
+
+    insert into public.opciones (pregunta_id, orden, texto, emoji) values
+      (id_p3, 1, 'Un varón',          '👦'),
+      (id_p3, 2, 'Una mujer',         '👩'),
+      (id_p3, 3, 'Ambos',             '🤝'),
+      (id_p3, 4, 'No estoy seguro/a', '🤔')
     on conflict (pregunta_id, orden) do update
       set texto = excluded.texto, emoji = excluded.emoji;
 

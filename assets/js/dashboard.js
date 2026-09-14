@@ -14,19 +14,19 @@ import { db, exigirSesion, cerrarSesion, reautenticar, configurado } from './aut
 /* --------------------------------------------------------- Constantes --- */
 
 const COLORES = {
-  'Un varón':          '#4C8DF6',
-  'Una mujer':         '#FF8FAB',
-  'El hombre lo haría mejor':        '#4C8DF6',
-  'La mujer lo haría mejor':         '#FF8FAB',
-  'Los dos lo harían igual de bien': '#37C98B',
-  'No estoy seguro/a': '#ADB5BD'
+  'Un varón':          '#6C5CE7',
+  'Una mujer':         '#FF6B9D',
+  'Ambos':             '#00B8A9',
+  'Sí':                '#00B8A9',
+  'No':                '#E8452C',
+  'No estoy seguro/a': '#B8B5CC'
 };
 const COLOR_POR_DEFECTO = '#FFC93C';
 
 // Las dos vueltas, con su color y su nombre en pantalla.
 const MOMENTOS = [
-  { clave: 'antes',   nombre: 'Antes',   color: '#4C8DF6' },
-  { clave: 'despues', nombre: 'Después', color: '#37C98B' }
+  { clave: 'antes',   nombre: 'Antes',   color: '#6C5CE7' },
+  { clave: 'despues', nombre: 'Después', color: '#00B8A9' }
 ];
 
 const TAMANO_PAGINA = 1000; // límite por consulta en PostgREST
@@ -373,7 +373,7 @@ function pintarBloquesPorProfesion() {
   estado.profesiones.forEach((profesion) => {
     const suyas = respuestas.filter((r) => r.profesion_id === profesion.id);
 
-    const preguntas = ['p1', 'p2'].map((codigo) => {
+    const preguntas = ['p1', 'p2', 'p3'].map((codigo) => {
       const deLaPregunta = suyas.filter((r) => r.pregunta_codigo === codigo);
       const conteo = { antes: new Map(), despues: new Map() };
       const totales = { antes: 0, despues: 0 };
@@ -410,7 +410,7 @@ function pintarBloquesPorProfesion() {
       </div>
       <div class="row g-4">
         ${preguntas.map((p) => `
-          <div class="col-12 col-lg-6">
+          <div class="col-12 col-xl-4">
             <p class="fw-bold mb-2" style="font-size:.95rem">${escaparHtml(p.texto)}</p>
             <div class="caja-grafico" style="height:260px">
               <canvas id="g-${profesion.etiqueta}-${p.codigo}"></canvas>
@@ -460,7 +460,8 @@ function pintarBloquesPorProfesion() {
 function textoPreguntaPorDefecto(codigo) {
   return {
     p1: '¿Quién crees que está realizando este trabajo?',
-    p2: '¿Crees que una mujer y un hombre pueden hacer este trabajo igual de bien?'
+    p2: '¿Consideras que esta profesión puede ser realizada tanto por varones como por mujeres?',
+    p3: '¿Quién crees que puede realizar mejor este trabajo?'
   }[codigo];
 }
 
@@ -819,7 +820,7 @@ function csvResumen() {
 
   filas.push(['DETALLE POR PREGUNTA']);
   filas.push(['profesion', 'pregunta', 'opcion', 'antes', '%_antes', 'despues', '%_despues']);
-  ['p1', 'p2'].forEach((codigo) => {
+  ['p1', 'p2', 'p3'].forEach((codigo) => {
     conteoPorProfesion(codigo).forEach((f) => {
       const opciones = [...new Set([...f.antes.opciones.keys(), ...f.despues.opciones.keys()])];
       opciones.forEach((opcion) => {

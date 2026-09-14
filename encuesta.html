@@ -34,7 +34,7 @@
       </div>
 
       <div class="d-flex align-items-center justify-content-between mb-2">
-        <span class="texto-progreso" id="texto-progreso">Pregunta 1 de 10</span>
+        <span class="texto-progreso" id="texto-progreso">Pregunta 1 de 15</span>
         <a href="index.html?v=5" class="text-decoration-none fw-bold" style="color:var(--gris)">Salir</a>
       </div>
 
@@ -81,7 +81,7 @@
 
   <script type="module">
     import {
-      cargarContenido, aplanarPasos, guardarRespuesta, completarSesion, rutaImagen,
+      cargarContenido, aplanarPasos, guardarRespuesta, completarSesion,
       idSesion, respuestasLocales, indiceGuardado, guardarIndice,
       momentoActual, historiasVistas,
       avisarSiFaltaConfiguracion, mostrarError, limpiarError
@@ -109,9 +109,6 @@
     let elegidas = {};       // { preguntaId: opcionId }
     let bloqueActual = null; // para no recargar la foto en cada pregunta
     let momento = 'antes';   // 'antes' o 'despues': las dos vueltas
-
-    /** Cuántos trabajos distintos hay, sin suponer preguntas por trabajo. */
-    const totalTrabajos = () => new Set(pasos.map((p) => p.bloque.id)).size;
 
     /* ------------------------------------------------------ Arranque --- */
 
@@ -160,8 +157,8 @@
       // La foto solo cambia cuando cambiamos de trabajo.
       if (bloqueActual !== paso.bloque.id) {
         bloqueActual = paso.bloque.id;
-        foto.src = rutaImagen(paso.bloque);
-        etiqueta.textContent = `Trabajo ${paso.numeroBloque} de ${totalTrabajos()}`;
+        foto.src = 'assets/img/' + paso.bloque.imagen;
+        etiqueta.textContent = `Trabajo ${paso.numeroBloque} de ${pasos.length / 3}`;
         precargarSiguienteFoto();
       }
 
@@ -226,7 +223,7 @@
       const siguiente = pasos.slice(indice + 1).find((p) => p.bloque.id !== bloqueActual);
       if (!siguiente) return;
       const imagen = new Image();
-      imagen.src = rutaImagen(siguiente.bloque);
+      imagen.src = 'assets/img/' + siguiente.bloque.imagen;
     }
 
     /* ---------------------------------------------------- Navegación --- */

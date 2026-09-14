@@ -4,19 +4,16 @@
    pensados para niños de primaria en celular, tablet y computadora.
    ========================================================================== */
 
-/* Modo claro escolar: fondo gris muy claro y acentos pastel vibrantes.
-   Los nombres de las variables se conservan para no romper el resto del
-   archivo; lo que cambia es el color que guarda cada una. */
 :root {
-  --morado:  #4C8DF6;   /* azul pastel vibrante: acción principal */
-  --morado-oscuro: #3B73D1;
-  --naranja: #FF9F68;
-  --amarillo:#FFD43B;
-  --turquesa:#37C98B;   /* verde pastel: confirmación y progreso */
-  --rosa:    #FF8FAB;
-  --crema:   #f8f9fa;   /* fondo gris muy claro */
-  --tinta:   #212529;
-  --gris:    #6c757d;
+  --morado:  #6C5CE7;
+  --morado-oscuro: #4B3FC4;
+  --naranja: #FF7A59;
+  --amarillo:#FFC93C;
+  --turquesa:#00B8A9;
+  --rosa:    #FF6B9D;
+  --crema:   #FFF8F0;
+  --tinta:   #2D2A45;
+  --gris:    #6B6880;
 
   --radio:   22px;
   --sombra:  0 6px 0 rgba(45, 42, 69, .12);
@@ -48,13 +45,11 @@ h1, h2, h3, h4, .titulo {
   letter-spacing: -0.01em;
 }
 
-/* Manchas pastel muy suaves sobre el gris claro: dan alegría sin restar
-   contraste al texto ni competir con las fotos. */
 .fondo-alegre {
   background:
-    radial-gradient(circle at 12% 18%, rgba(255, 212, 59, .22), transparent 42%),
-    radial-gradient(circle at 88% 12%, rgba(76, 141, 246, .16), transparent 45%),
-    radial-gradient(circle at 78% 88%, rgba(55, 201, 139, .16), transparent 45%),
+    radial-gradient(circle at 12% 18%, rgba(255, 201, 60, .30), transparent 42%),
+    radial-gradient(circle at 88% 12%, rgba(108, 92, 231, .22), transparent 45%),
+    radial-gradient(circle at 78% 88%, rgba(0, 184, 169, .22), transparent 45%),
     var(--crema);
   background-attachment: fixed;
 }
@@ -347,11 +342,10 @@ h1, h2, h3, h4, .titulo {
   .tarjeta-login .form-control-lg { font-size: 1rem; padding: .45rem .75rem; }
 }
 
-/* Cuando la foto es pequeña, la etiqueta encoge pero nunca baja de 13px:
-   por debajo de eso deja de leerse cómodo en un celular. */
+/* Cuando la foto es pequeña, la etiqueta no debe taparla. */
 @media (max-height: 700px), (max-width: 420px) {
   .etiqueta-trabajo {
-    font-size: max(13px, .82rem);
+    font-size: .78rem;
     padding: .22rem .7rem;
     top: .5rem;
     left: .5rem;
@@ -361,16 +355,14 @@ h1, h2, h3, h4, .titulo {
 /* ------------------------------------------------------- Progreso ------ */
 
 .barra-progreso {
-  height: 12px;
+  height: 16px;
   border-radius: 999px;
-  background: #e9ecef;
+  background: #EDE9FB;
   overflow: hidden;
 }
 
-/* Verde brillante que vira a amarillo: se ve de lejos y a un niño le resulta
-   evidente que la barra "crece" a medida que avanza. */
 .barra-progreso .progress-bar {
-  background: linear-gradient(90deg, #37C98B, #FFD43B);
+  background: linear-gradient(90deg, var(--turquesa), var(--morado));
   transition: width .35s ease;
 }
 
@@ -731,92 +723,4 @@ footer.pie {
 @media (max-height: 640px) and (max-width: 659px) {
   .marco-historia img { max-height: 30svh; }
   .texto-historia-caja { padding: .75rem .9rem !important; }
-}
-
-/* ==========================================================================
-   Ajustes de la encuesta para celular y computadora
-   Van al final del archivo a propósito: deben ganar a las reglas de arriba,
-   que tienen la misma especificidad.
-   ========================================================================== */
-
-/* La foto deja de ser cuadrada. Las del carrusel llevan el nombre escrito
-   encima y un recorte cuadrado lo cortaba; ahora se ve entera. */
-.marco-imagen {
-  width: 100%;
-  max-width: 560px;
-  aspect-ratio: auto;
-  background: #fff;
-}
-
-.marco-imagen img {
-  height: auto;
-  object-fit: contain;
-}
-
-/* Las páginas del niño nunca bajan de 1.2rem de texto. */
-body.fondo-alegre {
-  font-size: clamp(1.2rem, 1.1vw + 14px, 1.25rem);
-}
-
-/* --- Celular de pie: foto arriba, respuestas abajo, al alcance del pulgar */
-@media (max-width: 991.98px) {
-  .marco-imagen img { max-height: 35svh; }
-
-  .pregunta-texto { font-size: clamp(1.35rem, 5vw, 1.7rem); }
-
-  .lista-opciones { gap: .75rem; }
-
-  .opcion {
-    font-size: 1.2rem;
-    min-height: 62px;
-    padding: .8rem 1rem;
-  }
-  .opcion .emoji { font-size: 1.9rem; }
-}
-
-/* --- Escritorio: dos columnas. Foto a la izquierda, pregunta y botones a la
-   derecha, para que el ratón no cruce la pantalla en cada respuesta. */
-@media (min-width: 992px) {
-  #encuesta .tablero {
-    display: grid;
-    grid-template-columns: minmax(280px, 44%) 1fr;
-    gap: 2.5rem;
-    align-items: center;
-  }
-
-  .marco-imagen img { max-height: 60svh; }
-
-  .opcion { font-size: 1.2rem; min-height: 62px; }
-}
-
-/* Las insignias de Bootstrap salen a 0.75em, que en el dashboard queda en
-   11px: demasiado pequeño para leer de un vistazo en una tablet. */
-body.pantalla-admin .badge {
-  font-size: max(13px, .78em);
-  padding: .35em .6em;
-}
-
-/* ==========================================================================
-   Que el botón de avanzar quepa siempre, sin bajar el texto de 1.2rem.
-   Va al final para ganar a las reglas de móvil de más arriba.
-   ========================================================================== */
-
-/* Celular acostado y portátiles bajos: se comprimen alturas y márgenes,
-   nunca el tamaño de la letra. */
-@media (max-height: 700px) and (min-width: 660px) {
-  #principal { padding-top: .4rem !important; padding-bottom: .5rem !important; }
-  .marco-imagen img { max-height: 30svh; }
-  .pregunta-texto { margin-bottom: .7rem !important; }
-  .lista-opciones { gap: .5rem; }
-  .opcion { min-height: 48px; padding: .5rem .9rem; }
-  .opcion .emoji { font-size: 1.5rem; }
-}
-
-/* Celular de pie muy angosto: la foto cede altura antes que las respuestas. */
-@media (max-width: 380px) {
-  #principal { padding-top: .5rem !important; padding-bottom: .5rem !important; }
-  .marco-imagen img { max-height: 24svh; }
-  .barra-progreso { margin-bottom: .75rem !important; }
-  .lista-opciones { gap: .5rem; }
-  .opcion { min-height: 54px; padding: .6rem .9rem; }
 }
