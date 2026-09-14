@@ -70,11 +70,19 @@
 
           <div class="col-12 col-sm-4">
             <label class="form-label fw-bold" for="edad">Tu edad</label>
-            <input class="form-control form-control-lg rounded-4" id="edad"
-                   name="edad" type="number" min="3" max="20" inputmode="numeric"
-                   placeholder="9" required aria-describedby="error-edad">
+            <select class="form-select form-select-lg rounded-4" id="edad"
+                    name="edad" required aria-describedby="error-edad">
+              <option value="" selected>Elige…</option>
+              <option value="6">6 años</option>
+              <option value="7">7 años</option>
+              <option value="8">8 años</option>
+              <option value="9">9 años</option>
+              <option value="10">10 años</option>
+              <option value="11">11 años</option>
+              <option value="12">12 años</option>
+            </select>
             <div class="invalid-feedback" id="error-edad">
-              Escribe tu edad, entre 3 y 20.
+              Elige tu edad en la lista.
             </div>
           </div>
         </div>
@@ -87,17 +95,22 @@
             <button type="button" class="opcion-genero" data-valor="Niño" role="radio"
                     aria-checked="false">
               <span class="emoji" aria-hidden="true">👦</span>
-              <span>Niño</span>
+              <span>Soy un niño</span>
             </button>
             <button type="button" class="opcion-genero" data-valor="Niña" role="radio"
                     aria-checked="false">
               <span class="emoji" aria-hidden="true">👧</span>
-              <span>Niña</span>
+              <span>Soy una niña</span>
+            </button>
+            <button type="button" class="opcion-genero" data-valor="Prefiero no decirlo"
+                    role="radio" aria-checked="false">
+              <span class="emoji" aria-hidden="true">🙂</span>
+              <span>Prefiero no decirlo</span>
             </button>
           </div>
 
           <p class="mensaje-error oculto mb-0 mt-2" id="error-genero">
-            Toca una de las dos opciones.
+            Toca una de las tres opciones.
           </p>
         </fieldset>
 
@@ -167,7 +180,7 @@
       const v = campoEdad.value.trim();
       if (v === '') return false;
       const n = Number(v);
-      return Number.isInteger(n) && n >= 3 && n <= 20;
+      return Number.isInteger(n) && n >= 6 && n <= 12;
     };
 
     const generoValido = () => generoElegido !== null;
@@ -176,6 +189,16 @@
       { campo: campoNombre, valida: nombreValido },
       { campo: campoEdad,   valida: edadValida }
     ];
+
+    /**
+     * El botón de empezar vive apagado hasta que los tres datos están.
+     * Así el niño ve desde el principio que falta algo, sin necesidad de
+     * pulsar y recibir un error.
+     */
+    function actualizarBoton() {
+      if (faltaConfig) return;              // sin credenciales sigue apagado
+      boton.disabled = !(nombreValido() && edadValida() && generoValido());
+    }
 
     // Elegir género: solo una opción a la vez.
     botonesGen.forEach((boton) => {
@@ -188,6 +211,7 @@
         });
         errorGenero.classList.add('oculto');
         document.getElementById('grupo-genero').classList.remove('falta');
+        actualizarBoton();
       });
     });
 
@@ -209,12 +233,18 @@
       return primeroMal;
     }
 
-    // Al escribir, el aviso rojo desaparece en cuanto el dato queda bien.
+    // Al escribir o elegir, el aviso rojo desaparece en cuanto el dato queda
+    // bien, y el botón se enciende solo cuando los tres están completos.
     REGLAS.forEach(({ campo, valida }) => {
-      campo.addEventListener('input', () => {
-        if (valida()) campo.classList.remove('is-invalid');
+      ['input', 'change'].forEach((evento) => {
+        campo.addEventListener(evento, () => {
+          if (valida()) campo.classList.remove('is-invalid');
+          actualizarBoton();
+        });
       });
     });
+
+    actualizarBoton();   // arranca apagado
 
     formulario.addEventListener('submit', async (evento) => {
       evento.preventDefault();

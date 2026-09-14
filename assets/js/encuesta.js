@@ -19,6 +19,7 @@ const CLAVE_DATOS      = 'encuesta_datos_v2';      // nombre, edad, genero
 const CLAVE_RESPUESTAS = 'encuesta_respuestas_v2'; // { antes: {...}, despues: {...} }
 const CLAVE_INDICE     = 'encuesta_indice_v2';     // { antes: n, despues: n }
 const CLAVE_MOMENTO    = 'encuesta_momento_v1';    // 'antes' o 'despues'
+const CLAVE_ORDEN      = 'encuesta_orden_v1';      // orden azaroso de profesiones
 const CLAVE_HISTORIAS  = 'encuesta_historias_v1';  // true si ya vio el carrusel
 const CLAVE_TERMINADA  = 'encuesta_terminada_v1';  // true cuando terminó todo
 
@@ -113,7 +114,7 @@ export function empezarSegundaVuelta() {
 /** Borra todo el rastro local para empezar una encuesta nueva. */
 export function reiniciarLocal() {
   [CLAVE_SESION, CLAVE_DATOS, CLAVE_RESPUESTAS, CLAVE_INDICE,
-   CLAVE_MOMENTO, CLAVE_HISTORIAS, CLAVE_TERMINADA]
+   CLAVE_MOMENTO, CLAVE_HISTORIAS, CLAVE_TERMINADA, CLAVE_ORDEN]
     .forEach((c) => { try { localStorage.removeItem(c); } catch { /* nada */ } });
 }
 
@@ -129,9 +130,72 @@ export function db() {
 
 export { configurado };
 
+/* ------------------------------------------- Imágenes de la encuesta --- */
+
+/**
+ * Carpeta de donde salen las fotos que ve el niño mientras responde.
+ *
+ * 'assets/img_ppts/' son las del carrusel: muestran a la mujer y su nombre,
+ * así que el niño ve la respuesta antes de responder.
+ * 'assets/img/' son las fotos sin rostro, donde no se distingue quién trabaja.
+ * Cambiar esta constante y USAR_IMAGEN_DE_CARPETA basta para volver atrás.
+ */
+export const CARPETA_IMAGENES = 'assets/img_ppts/';
+export const USAR_IMAGEN_DE_CARPETA = true;
+
+/** Una imagen representativa por carpeta, ligada a la etiqueta de cada profesión. */
+const IMAGEN_POR_PROFESION = {
+  astronauta: 'astronautas/01-koch-y-meir.png',
+  excavadora: 'excavadora/01-juana-torres.png',
+  nuclear:    'nucleares/01-marie-curie.png',
+  camion:     'conductoras/01-maria-cruz.png',
+  bombero:    'bomberas/01-bomberas.png'
+};
+
+/** Ruta final de la foto de un bloque, según la carpeta elegida arriba. */
+export function rutaImagen(bloque) {
+  if (USAR_IMAGEN_DE_CARPETA && IMAGEN_POR_PROFESION[bloque.etiqueta]) {
+    return CARPETA_IMAGENES + IMAGEN_POR_PROFESION[bloque.etiqueta];
+  }
+  return 'assets/img/' + bloque.imagen;
+}
+
+/* ------------------------------------------------ Orden aleatorio ------ */
+
+/** Baraja una copia del arreglo (Fisher-Yates). */
+function barajar(lista) {
+  const copia = lista.slice();
+  for (let i = copia.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copia[i], copia[j]] = [copia[j], copia[i]];
+  }
+  return copia;
+}
+
+/**
+ * Ordena las profesiones al azar, pero SOLO la primera vez.
+ *
+ * El orden se guarda en el navegador porque debe ser el mismo si el niño
+ * recarga a media encuesta, y también en la segunda vuelta: si cambiara,
+ * el antes y el después dejarían de ser comparables.
+ */
+function ordenarAlAzar(bloques) {
+  let orden = leerLocal(CLAVE_ORDEN, null);
+  const ids = bloques.map((b) => b.id);
+
+  const sirve = Array.isArray(orden) && orden.length === ids.length &&
+                ids.every((id) => orden.includes(id));
+  if (!sirve) {
+    orden = barajar(ids);
+    escribirLocal(CLAVE_ORDEN, orden);
+  }
+
+  return orden.map((id) => bloques.find((b) => b.id === id));
+}
+
 /**
  * Trae el contenido completo de la encuesta: 5 profesiones, cada una con sus
- * 3 preguntas, cada una con sus opciones. Todo ordenado.
+ * 2 preguntas, cada una con sus opciones. Las profesiones salen barajadas.
  */
 export async function cargarContenido() {
   const { data, error } = await db()
@@ -154,13 +218,16 @@ export async function cargarContenido() {
     bloque.preguntas.sort((a, b) => a.orden - b.orden);
     bloque.preguntas.forEach((p) => p.opciones.sort((a, b) => a.orden - b.orden));
   });
-  return bloques;
+
+  // Cada niño ve las profesiones en un orden distinto, para que el cansancio
+  // de las últimas preguntas no recaiga siempre sobre la misma profesión.
+  return ordenarAlAzar(bloques);
 }
 
 /**
- * Aplana los 5 bloques en la lista de 15 pantallas que verá el niño.
+ * Aplana los 5 bloques en la lista de 10 pantallas que verá el niño.
  * Cada paso lleva su pregunta y también el bloque, porque la foto se
- * mantiene arriba durante las 3 preguntas del mismo trabajo.
+ * mantiene durante las 2 preguntas del mismo trabajo.
  */
 export function aplanarPasos(bloques) {
   const pasos = [];
@@ -188,7 +255,7 @@ async function rondaActiva() {
 }
 
 /** Las únicas respuestas válidas para el género, iguales que en la base. */
-export const GENEROS = ['Niño', 'Niña'];
+export const GENEROS = ['Niño', 'Niña', 'Prefiero no decirlo'];
 
 /**
  * Crea la sesión del niño y la guarda en localStorage.
@@ -202,11 +269,11 @@ export async function crearSesion({ nombre, edad, genero }) {
   if (nombreLimpio.length < 2) {
     throw new Error('Escribe tu nombre para poder empezar.');
   }
-  if (!Number.isInteger(edadNumero) || edadNumero < 3 || edadNumero > 20) {
-    throw new Error('Escribe tu edad, entre 3 y 20, para poder empezar.');
+  if (!Number.isInteger(edadNumero) || edadNumero < 6 || edadNumero > 12) {
+    throw new Error('Elige tu edad, entre 6 y 12, para poder empezar.');
   }
   if (!GENEROS.includes(genero)) {
-    throw new Error('Elige si eres niño o niña para poder empezar.');
+    throw new Error('Elige una de las tres opciones para poder empezar.');
   }
 
   const ronda = await rondaActiva();

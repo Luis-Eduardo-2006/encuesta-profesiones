@@ -4,7 +4,7 @@ Encuesta web para niños de primaria sobre **estereotipos de género en las prof
 con dashboard de resultados para el docente.
 
 El niño ve 5 fotos de personas trabajando en las que no se distingue quién las realiza.
-Por cada foto responde 3 preguntas, 15 en total. **Solo entonces** conoce a las mujeres
+Por cada foto responde 2 preguntas, 10 en total. **Solo entonces** conoce a las mujeres
 que ejercen de verdad esas profesiones, en un carrusel de 17 diapositivas. Y después
 vuelve a responder las mismas 15 preguntas.
 
@@ -15,10 +15,10 @@ pregunta y niño por niño.
 El recorrido completo es:
 
 1. `index.html` — nombre, edad y género.
-2. `encuesta.html` — las 15 preguntas (vuelta **antes**).
+2. `encuesta.html` — las 10 preguntas (vuelta **antes**).
 3. `historias.html` — "Ahora conozcamos el caso de estas mujeres…", el carrusel, y
    "¿Sigues pensando igual?".
-4. `encuesta.html` otra vez — las mismas 15 preguntas (vuelta **después**).
+4. `encuesta.html` otra vez — las mismas 10 preguntas (vuelta **después**).
 5. `revelacion.html` — gracias, y su propio antes y después, pregunta por pregunta.
 
 Las historias van en medio a propósito: enseñarlas antes contaminaría la primera vuelta.
@@ -31,7 +31,7 @@ se publica como sitio estático tal cual está.
 
 ```
 index.html            portada: nombre, edad y género del participante
-encuesta.html         las 15 preguntas, una por pantalla (sirve para las dos vueltas)
+encuesta.html         las 10 preguntas, una por pantalla (sirve para las dos vueltas)
 historias.html        las dos pantallas de mensaje y el carrusel de 17 diapositivas
 revelacion.html       gracias + el antes y después del propio niño
 login.html            acceso del administrador
@@ -62,7 +62,7 @@ referencia, por si algún día hay que rehacerlo o montarlo en otra cuenta.
 | Proyecto Supabase | `encuesta-profesiones` |
 | Región | `us-east-1` |
 | Credenciales públicas | ya pegadas en `assets/js/config.js` |
-| Esquema | ejecutado: 5 profesiones, 15 preguntas, 50 opciones, `Ronda 1` activa |
+| Esquema | ejecutado: 5 profesiones, 10 preguntas, 35 opciones, `Ronda 1` activa |
 | Administrador | el correo y la contraseña se guardan fuera del repositorio |
 
 **El correo y la contraseña del docente no se escriben aquí a propósito.** Este
@@ -100,7 +100,7 @@ las 5 profesiones con sus 15 preguntas y todas sus opciones. El archivo se puede
 a ejecutar sin duplicar nada.
 
 Para comprobar que quedó bien, en **Table Editor** deberías ver 5 filas en `profesiones`,
-15 en `preguntas` y 1 en `rondas`.
+10 en `preguntas` y 1 en `rondas`.
 
 ## 3. Crear el usuario administrador
 
@@ -244,8 +244,10 @@ página vieja en caché y el formulario dejaría de funcionar tras un cambio.
 
 Comparte el link público de la portada. No hay registro ni contraseña: el enlace basta.
 
-Antes de empezar, el niño debe indicar su **nombre, su edad y su género**. El género se
-elige tocando una de dos tarjetas: Niño o Niña.
+Antes de empezar, el niño debe indicar su **nombre, su edad y su género**. La edad se
+elige en un desplegable de 6 a 12 años, y el género tocando una de tres tarjetas:
+Soy un niño, Soy una niña o Prefiero no decirlo. El botón de empezar está apagado
+hasta que los tres estén completos.
 
 Los tres datos son obligatorios y el botón de empezar no avanza hasta que estén completos.
 La regla se aplica en tres capas: el formulario avisa en rojo, `crearSesion()` la vuelve a
@@ -279,7 +281,7 @@ Entra por `login.html` con el correo y la contraseña que creaste en el paso 3.
   si los niños asumen "un varón" con más frecuencia que las niñas.
 - Tabla con una fila por sesión, filtrable por ronda, género y rango de fechas. Cada
   profesión se muestra como *antes → después*, y las celdas que cambiaron quedan
-  resaltadas. El botón **15 ▾** de cada fila despliega las quince preguntas de esa
+  resaltadas. El botón **10 ▾** de cada fila despliega las diez preguntas de esa
   persona, con su antes, su después y si cambió.
 - **Exportar CSV**: descarga tres archivos, que se abren directamente en Excel.
   - `encuesta-respuestas-…` — una fila por respuesta, con su columna `momento`.
