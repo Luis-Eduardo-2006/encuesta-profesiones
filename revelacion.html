@@ -23,17 +23,7 @@
 
     <!-- Comparación antes / después -->
     <section id="comparacion" class="oculto mb-4" aria-live="polite"></section>
-
-    <!-- Las 15 preguntas, una a una -->
-    <section id="detalle" class="oculto mb-4"></section>
-
-    <section class="mensaje-final mt-5 mb-4">
-      <div style="font-size:2.5rem" aria-hidden="true">💜</div>
-      Cualquier profesión puede ser realizada por una mujer o por un varón.<br>
-      Lo que importa es la preparación y las ganas de aprender.
-    </section>
-
-    <!-- Cierre: la conclusión del proyecto -->
+    <!-- Conclusión, justo después de sus resultados -->
     <section class="conclusion mb-5" aria-labelledby="titulo-conclusion">
       <div class="conclusion-bombilla" aria-hidden="true">💡</div>
       <div class="conclusion-cuerpo">
@@ -43,6 +33,15 @@
         </p>
         <p class="conclusion-remate">¡Las profesiones no tienen género!</p>
       </div>
+    </section>
+
+    <!-- Las 15 preguntas, una a una -->
+    <section id="detalle" class="oculto mb-4"></section>
+
+    <section class="mensaje-final my-5">
+      <div style="font-size:2.5rem" aria-hidden="true">💜</div>
+      Cualquier profesión puede ser realizada por una mujer o por un varón.<br>
+      Lo que importa es la preparación y las ganas de aprender.
     </section>
 
     <div class="text-center mb-4">
@@ -162,8 +161,7 @@
           </section>
 
           <p class="mb-0" style="color:var(--gris)">
-            ${escapar(frase)} Recuerda: no hay respuestas correctas, esto solo
-            muestra lo que solemos imaginar antes de conocer a las personas.
+            ${escapar(frase)}
           </p>
         </div>`;
       document.getElementById('comparacion').classList.remove('oculto');
