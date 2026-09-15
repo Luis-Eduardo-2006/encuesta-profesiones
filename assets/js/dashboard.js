@@ -16,7 +16,9 @@ import { db, exigirSesion, cerrarSesion, reautenticar, configurado } from './aut
 const COLORES = {
   'Un varón':          '#6C5CE7',
   'Una mujer':         '#FF6B9D',
-  'Ambos':             '#00B8A9',
+  'El varón lo haría mejor':        '#6C5CE7',
+  'La mujer lo haría mejor':         '#FF6B9D',
+  'Los dos lo harían igual de bien': '#00B8A9',
   'Sí':                '#00B8A9',
   'No':                '#E8452C',
   'No estoy seguro/a': '#B8B5CC'

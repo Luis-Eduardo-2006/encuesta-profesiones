@@ -19,8 +19,7 @@
         <div style="font-size:4rem; line-height:1" aria-hidden="true">✨</div>
         <h1 class="titulo mb-3">Ahora conozcamos el caso de estas mujeres…</h1>
         <p class="fs-5 mb-4" style="color:var(--gris)">
-          Ya respondiste lo que pensabas. Mira quiénes hacen de verdad esos
-          cinco trabajos, y luego te preguntaremos otra vez.
+          Ya respondiste lo que pensabas. Mira quiénes realizan estos 5 trabajos.
         </p>
         <button class="btn btn-principal btn-grande" id="btn-empezar-historias" type="button">
           Ver sus historias 👀
@@ -32,7 +31,7 @@
     <section id="pantalla-carrusel" class="oculto">
 
       <div class="d-flex align-items-center justify-content-between mb-2">
-        <span class="texto-progreso" id="texto-diapositiva">Historia 1 de 17</span>
+        <span class="texto-progreso" id="texto-diapositiva">Historia 1 de 16</span>
         <span class="fw-bold" id="nombre-grupo" style="color:var(--morado)"></span>
       </div>
 
@@ -75,15 +74,14 @@
       <div class="tarjeta p-4 p-md-5 text-center">
         <div style="font-size:4rem; line-height:1" aria-hidden="true">🤔</div>
         <h1 class="titulo mb-3">
-          Y después de mostrarte el caso de estas mujeres…
+          Y después de mostrarte los casos de estas mujeres…
           <span style="color:var(--morado)">¿Sigues pensando igual?</span>
         </h1>
         <p class="fs-5 mb-4" style="color:var(--gris)">
-          Vamos a ver las mismas cinco fotos y las mismas preguntas.
-          Responde otra vez lo que pienses ahora. No hay respuestas correctas.
+          Responde lo que piensas después de haber visto estos casos.
         </p>
         <button class="btn btn-principal btn-grande" id="btn-responder-otra-vez" type="button">
-          Responder otra vez →
+          Responde otra vez →
         </button>
         <p class="mt-3 mb-0" style="color:var(--gris); font-size:.95rem">
           <button type="button" class="btn btn-link p-0" id="btn-ver-otra-vez"
@@ -103,7 +101,7 @@
     const $ = (id) => document.getElementById(id);
 
     /* ------------------------------------------------------------------
-       Las 17 diapositivas, agrupadas por profesión. El texto es del
+       Las 16 diapositivas, agrupadas por profesión. El texto es del
        proyecto; las fotos están en assets/img_ppts/.
        ------------------------------------------------------------------ */
     const HISTORIAS = [
@@ -213,24 +211,17 @@
         alt: 'Gladys Cóndor de pie en el estribo de su semitráiler.'
       },
 
-      /* --- 5. Bomberas ----------------------------------------------- */
+      /* --- 5. Bomberas: 2 diapositivas ------------------------------ */
       {
         grupo: 'Bomberas del Perú', trabajo: 5, emoji: '🚒', color: 'color-5',
-        imagen: 'bomberas/01-bomberas.png',
+        imagen: 'bomberas/01-compania-magdalena.png',
         pie: 'Más de 7 mil mujeres bomberas',
-        texto: 'Integran el Cuerpo General de Bomberos Voluntarios del Perú. De los 17,367 efectivos en servicio activo, 7,141 son mujeres: el 41%.',
-        alt: 'Cinco bomberas con uniforme levantando el pulgar frente a un camión.'
+        texto: 'Integran el Cuerpo General de Bomberos Voluntarios del Perú: de los 17,367 efectivos en servicio activo, 7,141 son mujeres, el 41%. Y varias dirigen su propia Compañía de Bomberos.',
+        alt: 'Cuatro bomberas sobre un camión de la Compañía de Bomberos Voluntarios Magdalena 36.'
       },
       {
         grupo: 'Bomberas del Perú', trabajo: 5, emoji: '🚒', color: 'color-5',
-        imagen: 'bomberas/02-compania-magdalena.png',
-        pie: 'Y muchas comandan su propia compañía',
-        texto: 'No solo participan: varias dirigen Compañías de Bomberos en todo el país. Ser bombero voluntario significa dejar lo que estés haciendo y salir cuando suena la alarma.',
-        alt: 'Bomberas del Cuerpo General de Bomberos Voluntarios sobre un camión de la compañía Magdalena 36.'
-      },
-      {
-        grupo: 'Bomberas del Perú', trabajo: 5, emoji: '🚒', color: 'color-5',
-        imagen: 'bomberas/03-en-accion.png',
+        imagen: 'bomberas/02-en-accion.png',
         pie: 'Apagando incendios de verdad',
         texto: 'Manejan la manguera, entran a los edificios y rescatan personas. El equipo completo de un bombero pesa más de 20 kilos.',
         alt: 'Dos bomberas dirigiendo el chorro de una manguera contra el fuego.'

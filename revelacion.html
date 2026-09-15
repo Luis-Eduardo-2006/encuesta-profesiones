@@ -27,10 +27,22 @@
     <!-- Las 15 preguntas, una a una -->
     <section id="detalle" class="oculto mb-4"></section>
 
-    <section class="mensaje-final my-5">
+    <section class="mensaje-final mt-5 mb-4">
       <div style="font-size:2.5rem" aria-hidden="true">💜</div>
       Cualquier profesión puede ser realizada por una mujer o por un varón.<br>
       Lo que importa es la preparación y las ganas de aprender.
+    </section>
+
+    <!-- Cierre: la conclusión del proyecto -->
+    <section class="conclusion mb-5" aria-labelledby="titulo-conclusion">
+      <div class="conclusion-bombilla" aria-hidden="true">💡</div>
+      <div class="conclusion-cuerpo">
+        <h2 class="conclusion-etiqueta" id="titulo-conclusion">En conclusión…</h2>
+        <p class="conclusion-texto">
+          Conocer y difundir ejemplos reales nos ayuda a cambiar nuestras ideas.
+        </p>
+        <p class="conclusion-remate">¡Las profesiones no tienen género!</p>
+      </div>
     </section>
 
     <div class="text-center mb-4">
@@ -52,7 +64,9 @@
     const COLOR = {
       'Un varón': '#6C5CE7',
       'Una mujer': '#FF6B9D',
-      'Ambos': '#00B8A9',
+      'El varón lo haría mejor': '#6C5CE7',
+      'La mujer lo haría mejor': '#FF6B9D',
+      'Los dos lo harían igual de bien': '#00B8A9',
       'Sí': '#00B8A9',
       'No': '#E8452C',
       'No estoy seguro/a': '#8B879E'
@@ -98,16 +112,68 @@
           ? 'Cambiaste 1 respuesta después de conocer sus historias.'
           : `Cambiaste ${c.cambios} respuestas después de conocer sus historias.`;
 
+      /* --- Medidores: cuánto cambió, y el antes y después ------------- */
+      // Solo cuentan las preguntas que respondió en las dos vueltas.
+      const comparables = c.preguntas.filter((p) => p.antes && p.despues).length;
+      const pct = (parte, total) => (total ? Math.round((parte / total) * 100) : 0);
+      const pctCambios = pct(c.cambios, comparables);
+      const pctAntes = pct(c.varonAntes, c.totalP1);
+      const pctDespues = pct(c.varonDespues, c.totalP1);
+
+      const medidorCambios = comparables
+        ? `<p class="medidor-titulo mb-2">
+             Cambiaste tus respuestas en
+             <strong>${c.cambios} de ${comparables}</strong>
+             ${comparables === 1 ? 'pregunta' : 'preguntas'}
+           </p>
+           <div class="medidor-fila">
+             <div class="medidor-barra" role="meter" aria-valuemin="0" aria-valuemax="100"
+                  aria-valuenow="${pctCambios}" aria-label="Porcentaje de respuestas que cambiaste">
+               <div class="medidor-relleno relleno-cambios" data-ancho="${pctCambios}"></div>
+             </div>
+             <span class="medidor-valor">${pctCambios}%</span>
+           </div>`
+        : '<p class="medidor-titulo mb-0">Todavía no respondiste la segunda vuelta.</p>';
+
+      const barraMomento = (nombre, clase, veces, porcentaje) => `
+        <div class="medidor-fila">
+          <span class="medidor-etiqueta">${nombre}</span>
+          <div class="medidor-barra delgada" role="meter" aria-valuemin="0" aria-valuemax="100"
+               aria-valuenow="${porcentaje}" aria-label="${nombre}: porcentaje de trabajos en que pensaste que era un varón">
+            <div class="medidor-relleno ${clase}" data-ancho="${porcentaje}"></div>
+          </div>
+          <span class="medidor-valor">${porcentaje}%</span>
+        </div>
+        <p class="medidor-detalle">${veces} de ${c.totalP1} trabajos</p>`;
+
       document.getElementById('comparacion').innerHTML = `
         <div class="tarjeta p-4 p-md-5">
-          <h2 class="h3 titulo mb-3">¿Cambiaste de opinión?</h2>
-          <p class="fs-4 fw-bold mb-2" style="color:var(--morado)">${escapar(titular)}</p>
+          <h2 class="h3 titulo mb-4">¿Cambiaste de opinión?</h2>
+
+          <section class="medidor mb-4" aria-label="Respuestas que cambiaste">
+            ${medidorCambios}
+          </section>
+
+          <section class="medidor mb-4" aria-label="Antes y después">
+            <p class="medidor-titulo mb-1">¿En cuántos trabajos pensaste que era un varón?</p>
+            <p class="mb-3" style="color:var(--morado); font-weight:800">${escapar(titular)}</p>
+            ${barraMomento('Antes', 'relleno-antes', c.varonAntes, pctAntes)}
+            ${barraMomento('Después', 'relleno-despues', c.varonDespues, pctDespues)}
+          </section>
+
           <p class="mb-0" style="color:var(--gris)">
             ${escapar(frase)} Recuerda: no hay respuestas correctas, esto solo
             muestra lo que solemos imaginar antes de conocer a las personas.
           </p>
         </div>`;
       document.getElementById('comparacion').classList.remove('oculto');
+
+      // Las barras se llenan poco a poco al aparecer.
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        document.querySelectorAll('#comparacion .medidor-relleno').forEach((barra) => {
+          barra.style.width = barra.dataset.ancho + '%';
+        });
+      }));
 
       /* --- Las 15 preguntas, agrupadas por trabajo -------------------- */
       const porProfesion = [];

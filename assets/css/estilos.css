@@ -724,3 +724,155 @@ footer.pie {
   .marco-historia img { max-height: 30svh; }
   .texto-historia-caja { padding: .75rem .9rem !important; }
 }
+
+/* ------------------------------------ Pantalla final: medidores -------- */
+
+.medidor {
+  background: #FAF9FF;
+  border: 2px solid #EFEBFF;
+  border-radius: var(--radio);
+  padding: 1.1rem 1.25rem;
+}
+
+.medidor-titulo {
+  font-weight: 800;
+  font-size: clamp(1.05rem, 2.6vw, 1.25rem);
+}
+
+.medidor-fila {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+.medidor-etiqueta {
+  flex: 0 0 5.5rem;
+  font-weight: 800;
+}
+
+.medidor-barra {
+  flex: 1 1 auto;
+  height: 26px;
+  border-radius: 999px;
+  background: #E9E4FA;
+  overflow: hidden;
+}
+
+.medidor-barra.delgada { height: 18px; }
+
+.medidor-relleno {
+  height: 100%;
+  width: 0;                 /* se llena al aparecer, ver revelacion.html */
+  border-radius: 999px;
+  transition: width 1.1s ease-out;
+}
+
+.relleno-cambios { background: linear-gradient(90deg, var(--amarillo), var(--naranja)); }
+.relleno-antes   { background: var(--morado); }
+.relleno-despues { background: var(--turquesa); }
+
+.medidor-valor {
+  flex: 0 0 3.6rem;
+  text-align: right;
+  font-weight: 900;
+  font-size: 1.25rem;
+}
+
+.medidor-detalle {
+  margin: .2rem 0 .75rem calc(5.5rem + .75rem);
+  color: var(--gris);
+  font-size: .9rem;
+}
+
+@media (max-width: 420px) {
+  .medidor-etiqueta { flex-basis: 4.6rem; }
+  .medidor-detalle { margin-left: calc(4.6rem + .75rem); }
+  .medidor-valor { flex-basis: 3.2rem; font-size: 1.1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .medidor-relleno { transition: none; }
+}
+
+/* ------------------------------ Pantalla final: "En conclusión…" ------- */
+
+/* Recuadro celeste con etiqueta amarilla y bombilla, como la lámina del
+   proyecto. La bombilla sobresale a la izquierda en pantallas anchas. */
+.conclusion {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 760px;
+  margin-inline: auto;
+  padding: 1.4rem 1.6rem 1.4rem 5.2rem;
+  background: linear-gradient(135deg, #E8F6FF, #F4FBFF);
+  border: 3px solid #BFE3FA;
+  border-radius: 28px;
+  box-shadow: 0 10px 24px rgba(40, 110, 170, .12);
+}
+
+.conclusion-bombilla {
+  position: absolute;
+  left: -.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 5rem;
+  height: 5rem;
+  font-size: 3.1rem;
+  line-height: 1;
+  background: #FFF6CC;
+  border: 4px solid #1E3A6E;
+  border-radius: 50%;
+  box-shadow: 0 6px 0 rgba(30, 58, 110, .18);
+}
+
+.conclusion-cuerpo { flex: 1 1 auto; }
+
+.conclusion-etiqueta {
+  display: inline-block;
+  margin: 0 0 .7rem;
+  padding: .25rem 1.1rem;
+  background: var(--amarillo);
+  color: #1E3A6E;
+  font-size: clamp(1.35rem, 3.6vw, 1.75rem);
+  font-weight: 900;
+  border-radius: 999px;
+  box-shadow: 0 4px 0 rgba(30, 58, 110, .15);
+}
+
+.conclusion-texto {
+  margin: 0 0 .35rem;
+  color: #1E3A6E;
+  font-size: clamp(1.1rem, 2.8vw, 1.35rem);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.conclusion-remate {
+  margin: 0;
+  color: #1E3A6E;
+  font-size: clamp(1.2rem, 3.2vw, 1.55rem);
+  font-weight: 900;
+  line-height: 1.3;
+}
+
+/* Celular: la bombilla se coloca arriba, centrada, para no apretar el texto. */
+@media (max-width: 575.98px) {
+  .conclusion {
+    flex-direction: column;
+    text-align: center;
+    padding: 3.4rem 1.2rem 1.3rem;
+    margin-top: 2.6rem;
+  }
+  .conclusion-bombilla {
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, -50%);
+    width: 4.4rem;
+    height: 4.4rem;
+    font-size: 2.6rem;
+  }
+}

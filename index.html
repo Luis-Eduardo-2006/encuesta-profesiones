@@ -15,24 +15,22 @@
   <main id="principal" class="container py-4 py-md-5">
     <div class="tarjeta tarjeta-portada p-4 p-md-5">
 
-      <header class="text-center mb-4">
-        <div style="font-size:3.5rem; line-height:1">🔍</div>
-        <h1 class="titulo mb-2">¿Quién hace este trabajo?</h1>
-        <p class="fs-5 mb-0" style="color:var(--gris)">
-          Vas a ver <strong>5 fotos</strong> de personas trabajando.
-          En cada una responderás <strong>3 preguntas</strong>.
-        </p>
-      </header>
-
-      <div class="alert border-0 rounded-4 mb-4"
-           style="background:#F0ECFF; color:var(--tinta)">
-        <p class="mb-2 fw-bold">Antes de empezar, algo importante:</p>
-        <ul class="mb-0 ps-3">
-          <li>No hay respuestas correctas ni incorrectas. 😊</li>
-          <li>Responde lo primero que pienses, con sinceridad.</li>
-          <li>Tus respuestas solo las verá tu profesor/a.</li>
+      <!-- Bienvenida: lo primero que lee el niño antes de registrarse -->
+      <header class="bienvenida mb-4">
+        <h1 class="titulo mb-3">
+          ¿Quién hace este trabajo? <span aria-hidden="true">🕵️🕵️</span>
+        </h1>
+        <p class="mb-3">¡Hola! Vamos a jugar a descubrir quiénes hacen diferentes trabajos.</p>
+        <ul class="mb-3 ps-4">
+          <li class="mb-2">Verás <strong>5 fotos</strong> de personas trabajando.</li>
+          <li class="mb-2">En cada foto, responderás <strong>3 preguntas rápidas</strong>.</li>
+          <li class="mb-2">
+            <strong>¡Aquí no hay respuestas correctas ni incorrectas!</strong>
+            Solo dinos lo que tú pienses.
+          </li>
         </ul>
-      </div>
+        <p class="mb-0 fst-italic" style="color:var(--gris)">(Tus respuestas son secretas)</p>
+      </header>
 
       <!-- Avisos de configuración o de error -->
       <div id="avisos" class="mb-4 oculto"></div>

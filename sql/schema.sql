@@ -462,9 +462,9 @@ begin
     returning id into id_p3;
 
     insert into public.opciones (pregunta_id, orden, texto, emoji) values
-      (id_p3, 1, 'Un varón',          '👦'),
-      (id_p3, 2, 'Una mujer',         '👩'),
-      (id_p3, 3, 'Ambos',             '🤝'),
+      (id_p3, 1, 'El varón lo haría mejor',        '👨'),
+      (id_p3, 2, 'La mujer lo haría mejor',         '👩'),
+      (id_p3, 3, 'Los dos lo harían igual de bien', '👫'),
       (id_p3, 4, 'No estoy seguro/a', '🤔')
     on conflict (pregunta_id, orden) do update
       set texto = excluded.texto, emoji = excluded.emoji;

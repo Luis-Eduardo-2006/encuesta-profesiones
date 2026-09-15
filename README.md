@@ -5,7 +5,7 @@ con dashboard de resultados para el docente.
 
 El niño ve 5 fotos de personas trabajando en las que no se distingue quién las realiza.
 Por cada foto responde 3 preguntas, 15 en total. **Solo entonces** conoce a las mujeres
-que ejercen de verdad esas profesiones, en un carrusel de 17 diapositivas. Y después
+que ejercen de verdad esas profesiones, en un carrusel de 16 diapositivas. Y después
 vuelve a responder las mismas 15 preguntas.
 
 Esa es la medida del proyecto: cuánto cambia lo que un niño da por supuesto cuando le
@@ -32,13 +32,13 @@ se publica como sitio estático tal cual está.
 ```
 index.html            portada: nombre, edad y género del participante
 encuesta.html         las 15 preguntas, una por pantalla (sirve para las dos vueltas)
-historias.html        las dos pantallas de mensaje y el carrusel de 17 diapositivas
+historias.html        las dos pantallas de mensaje y el carrusel de 16 diapositivas
 revelacion.html       gracias + el antes y después del propio niño
 login.html            acceso del administrador
 dashboard.html        resultados (protegido)
 assets/css/estilos.css
 assets/img/           las 5 fotos de la encuesta
-assets/img_ppts/      las 17 fotos del carrusel, en 5 carpetas
+assets/img_ppts/      las 16 fotos del carrusel, en 5 carpetas
 assets/js/config.js         URL y anon key de Supabase (lo creas tú)
 assets/js/config.example.js plantilla versionada
 assets/js/encuesta.js       flujo del niño
@@ -145,7 +145,7 @@ Usa imágenes de menos de 500 KB para que carguen rápido en el celular del cole
 
 ### Las fotos del carrusel
 
-Las 17 diapositivas viven en `assets/img_ppts/`, repartidas en cinco carpetas:
+Las 16 diapositivas viven en `assets/img_ppts/`, repartidas en cinco carpetas:
 
 | Carpeta | Diapositivas |
 |---|---|
@@ -153,7 +153,7 @@ Las 17 diapositivas viven en `assets/img_ppts/`, repartidas en cinco carpetas:
 | `excavadora/` | Juana Torres, a los mandos, "he aprendido a superar" |
 | `nucleares/` | Marie Curie, Lise Meitner, Shirly Rodríguez, Yaela Beraun |
 | `conductoras/` | María Cruz, Lidia Quispe, Xiomara Paredes, Gladys Cóndor |
-| `bomberas/` | las bomberas, la compañía Magdalena 36, apagando un incendio |
+| `bomberas/` | la compañía Magdalena 36, apagando un incendio |
 
 El texto que acompaña a cada foto está en `historias.html`, en la lista `HISTORIAS`.
 Cada entrada tiene el grupo, el emoji, el archivo, un pie en negrita, el párrafo y el
